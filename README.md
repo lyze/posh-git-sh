@@ -6,14 +6,17 @@ fantastic (and can be found at found at https://github.com/dahlbyk/posh-git).
 
 I based my work off of https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
 
-This is distributed under the GNU GPL v2.0. I hope you find some use of it.
+This is distributed under the GNU GPL v2.0. I hope that you may find some use of it. Please do not hesitate to contact me
+about any issues or requests.
+
 
 INSTALLATION INSTRUCTIONS
 ========================
-1. Copy this file to somewhere (e.g. ~/.git-prompt.sh).
+1. Copy this file to somewhere (e.g. `~/.git-prompt.sh`).
 2. Add the following line to your `.bashrc`/`.zshrc`:
 
         source ~/.git-prompt.sh
+
 3. a. Change your `PS1` to call `__git_ps1` by command-substitution:
 
     > Bash: `PS1='[\u@\h \W$(__git_ps1 " (%s)")]\$ '`
