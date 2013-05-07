@@ -42,22 +42,9 @@
 # is set to false, then index and working tree information will be suppressed,
 # but current branch information will still be shown. 
 #
-# In addition, if you set GIT_PS1_SHOWDIRTYSTATE to a nonempty value,
-# unstaged (*) and staged (+) changes will be shown next to the branch
-# name.  You can configure this per-repository with the
-# bash.showDirtyState variable, which defaults to true once
-# GIT_PS1_SHOWDIRTYSTATE is enabled.
-#
 # You can also see if currently something is stashed, by setting
 # GIT_PS1_SHOWSTASHSTATE to a nonempty value. If something is stashed,
 # then a '$' will be shown next to the branch name.
-#
-# If you would like to see if there're untracked files, then you can set
-# GIT_PS1_SHOWUNTRACKEDFILES to a nonempty value. If there're untracked
-# files, then a '%' will be shown next to the branch name.  You can
-# configure this per-repository with the bash.showUntrackedFiles
-# variable, which defaults to true once GIT_PS1_SHOWUNTRACKEDFILES is
-# enabled.
 #
 # If you would like to see the difference between HEAD and its upstream,
 # set GIT_PS1_SHOWUPSTREAM="auto".  A "<" indicates you are behind, ">"
@@ -107,9 +94,17 @@ __git_ps1 ()
 {
     if [ "$(git config --bool bash.enableGitStatus)" == "false" ]; then return; fi
     local EnableFileStatus=`git config --bool bash.enableFileStatus`
-    ${EnableFileStatus:=true}
+    case "$EnableFileStatus" in
+        true)  EnableFileStatus=true ;;
+        false) EnableFileStatus=false ;;
+        *)     EnableFileStatus=true ;;
+    esac
     local ShowStatusWhenZero=`git config --bool bash.showStatusWhenZero`
-    ${ShowStatusWhenZero:=false}
+    case "$ShowStatusWhenZero" in
+        true)  ShowStatusWhenZero=true ;;
+        false) ShowStatusWhenZero=false ;;
+        *)     ShowStatusWhenZero=false ;;
+    esac
 
     local DefaultForegroundColor='\e[0;30m' # Default no color
     local DefaultBackgroundColor=
@@ -259,25 +254,8 @@ __git_ps1 ()
             b="GIT_DIR!"
         fi
     elif [ "true" = "$(git rev-parse --is-inside-work-tree 2>/dev/null)" ]; then
-        if [ -n "${GIT_PS1_SHOWDIRTYSTATE-}" ] &&
-           [ "$(git config --bool bash.showDirtyState)" != "false" ]
-        then
-            git diff --no-ext-diff --quiet --exit-code || isDirtyUnstaged="*"
-            if git rev-parse --quiet --verify HEAD >/dev/null; then
-                git diff-index --cached --quiet HEAD -- || isDirtyStaged="+"
-            else
-                isDirtyStaged="#"
-            fi
-        fi
         if [ -n "${GIT_PS1_SHOWSTASHSTATE-}" ]; then
             git rev-parse --verify refs/stash >/dev/null 2>&1 && isInStash="$"
-        fi
-
-        if [ -n "${GIT_PS1_SHOWUNTRACKEDFILES-}" ] &&
-           [ "$(git config --bool bash.showUntrackedFiles)" != "false" ] &&
-           [ -n "$(git ls-files --others --exclude-standard)" ]
-        then
-            u="%${ZSH_VERSION+%}"
         fi
 
         if [ -n "${GIT_PS1_SHOWUPSTREAM-}" ]; then
@@ -286,116 +264,114 @@ __git_ps1 ()
     fi
 
     # show index status and working directory status
-    local indexAdded=0
-    local indexModified=0
-    local indexDeleted=0
-    local indexUnmerged=0
-    local filesAdded=0
-    local filesModified=0
-    local filesDeleted=0
-    local filesUnmerged=0
-    while IFS=" " read -r tag rest
-    do
-        case "${tag:0:1}" in
-            A )
-                (( indexAdded++ ))
-                ;;
-            M )
-                (( indexModified++ ))
-                ;;
-            R )
-                (( indexModified++ ))
-                ;;
-            C )
-                (( indexModified++ ))
-                ;;
-            D )
-                (( indexDeleted++ ))
-                ;;
-            U )
-                (( indexUnmerged++ ))
-                ;;                                  
-        esac
-        case "${tag:1:1}" in
-            \? )
-                (( filesAdded++ ))
-                ;;
-            A )
-                (( filesAdded++ ))
-                ;;
-            M )
-                (( filesModified++ ))
-                ;;
-            D )
-                (( filesDeleted++ ))
-                ;;
-            U )
-                (( filesUnmerged++ ))
-                ;;  
-        esac
-    done <<< "`git status -s`"
+    if $EnableFileStatus; then
+        local indexAdded=0
+        local indexModified=0
+        local indexDeleted=0
+        local indexUnmerged=0
+        local filesAdded=0
+        local filesModified=0
+        local filesDeleted=0
+        local filesUnmerged=0
+        while IFS=" " read -r tag rest
+        do
+            case "${tag:0:1}" in
+                A )
+                    (( indexAdded++ ))
+                    ;;
+                M )
+                    (( indexModified++ ))
+                    ;;
+                R )
+                    (( indexModified++ ))
+                    ;;
+                C )
+                    (( indexModified++ ))
+                    ;;
+                D )
+                    (( indexDeleted++ ))
+                    ;;
+                U )
+                    (( indexUnmerged++ ))
+                    ;;                                  
+            esac
+            case "${tag:1:1}" in
+                \? )
+                    (( filesAdded++ ))
+                    ;;
+                A )
+                    (( filesAdded++ ))
+                    ;;
+                M )
+                    (( filesModified++ ))
+                    ;;
+                D )
+                    (( filesDeleted++ ))
+                    ;;
+                U )
+                    (( filesUnmerged++ ))
+                    ;;  
+            esac
+        done <<< "`git status -s`"
+    fi
 
     local f=$isDirtyUnstaged$isDirtyStaged$isInStash$u
     if $is_pcmode; then
         local gitstring=
         local branchstring="$isBare${b##refs/heads/}"
-        if [ -n "${GIT_PS1_SHOWCOLORHINTS-}" ]; then
-            # before-branch text
-            gitstring="\[$BeforeBackgroundColor\]\[$BeforeForegroundColor\]$BeforeText"
+        # before-branch text
+        gitstring="\[$BeforeBackgroundColor\]\[$BeforeForegroundColor\]$BeforeText"
 
-            # branch
-            if [ $behindBy -gt 0 ] && [ $aheadBy -gt 0 ]; then
-                gitstring+="\[$BranchBehindAndAheadBackgroundColor\]\[$BranchBehindAndAheadForegroundColor\]$branchstring"
-            elif [ $behindBy -gt 0 ]; then
-                gitstring+="\[$BranchBehindBackgroundColor\]\[$BranchBehindForegroundColor\]$branchstring"
-            elif [ $aheadBy -gt 0 ]; then
-                gitstring+="\[$BranchAheadBackgroundColor\]\[$BranchAheadForegroundColor\]$branchstring"
-            else
-                gitstring+="\[$BranchBackgroundColor\]\[$BranchForegroundColor\]$branchstring"
-            fi
-
-            local indexCount="$(( $indexAdded + $indexModified + $indexDeleted + $indexUnmerged ))"
-            local workingCount="$(( $filesAdded + $filesModified + $filesDeleted + $filesUnmerged ))"
-            # index status
-            if $EnableFileStatus; then
-                if [ $indexCount -ne 0 ] || $ShowStatusWhenZero; then
-                    gitstring+="\[$IndexBackgroundColor\]\[$IndexForegroundColor\] +$indexAdded ~$indexModified -$indexDeleted"
-                fi
-                if [ $indexUnmerged -ne 0 ]; then
-                    gitstring+=" \[$IndexBackgroundColor\]\[$IndexForegroundColor\]!$indexUnmerged"
-                fi
-                if [ $indexCount -ne 0 ] && ([ $workingCount -ne 0 ] || $ShowStatusWhenZero); then
-                    gitstring+="\[$DelimBackgroundColor\]\[$DelimForegroundColor\]$DelimText"
-                fi
-            fi
-            if [ $EnableFileStatus ]; then
-                if [ $workingCount -ne 0 ] || $ShowStatusWhenZero; then
-                    gitstring+="\[$WorkingBackgroundColor\]\[$WorkingForegroundColor\] +$filesAdded ~$filesModified -$filesDeleted"
-                fi
-                if [ $filesUnmerged -ne 0 ]; then
-                    gitstring+=" \[$WorkingBackgroundColor\]\[$WorkingForegroundColor\]!$filesUnmerged"
-                fi
-            fi
-            if [ $filesAdded -ne 0 ]; then
-                gitstring+="\[$UntrackedBackgroundColor\]\[$UntrackedForegroundColor\]$UntrackedText"
-            fi
-            gitstring+=${rebase:+' | \[\e[0m\]'$rebase}
-
-
-            # after-branch text
-            gitstring+="\[$AfterBackgroundColor\]\[$AfterForegroundColor\]$AfterText"
-            # printf -- "%s" "$gitstring"
-            # return
-
-            if [ -n "$isInStash" ]; then
-                gitstring+="\[$StashBackgroundColor\]\[$StashForegroundColor\]"$isInStash
-            fi
-            # if [ -n "$u" ]; then
-            #     gitstring+='\[\e[0;31m\]'$u
-            # fi
+        # branch
+        if [ $behindBy -gt 0 ] && [ $aheadBy -gt 0 ]; then
+            gitstring+="\[$BranchBehindAndAheadBackgroundColor\]\[$BranchBehindAndAheadForegroundColor\]$branchstring"
+        elif [ $behindBy -gt 0 ]; then
+            gitstring+="\[$BranchBehindBackgroundColor\]\[$BranchBehindForegroundColor\]$branchstring"
+        elif [ $aheadBy -gt 0 ]; then
+            gitstring+="\[$BranchAheadBackgroundColor\]\[$BranchAheadForegroundColor\]$branchstring"
         else
-            gitstring="$branchstring${f:+ $f}$rebase"
+            gitstring+="\[$BranchBackgroundColor\]\[$BranchForegroundColor\]$branchstring"
         fi
+
+        local indexCount="$(( $indexAdded + $indexModified + $indexDeleted + $indexUnmerged ))"
+        local workingCount="$(( $filesAdded + $filesModified + $filesDeleted + $filesUnmerged ))"
+        # index status
+        if $EnableFileStatus; then
+            if [ $indexCount -ne 0 ] || $ShowStatusWhenZero; then
+                gitstring+="\[$IndexBackgroundColor\]\[$IndexForegroundColor\] +$indexAdded ~$indexModified -$indexDeleted"
+            fi
+            if [ $indexUnmerged -ne 0 ]; then
+                gitstring+=" \[$IndexBackgroundColor\]\[$IndexForegroundColor\]!$indexUnmerged"
+            fi
+            if [ $indexCount -ne 0 ] && ([ $workingCount -ne 0 ] || $ShowStatusWhenZero); then
+                gitstring+="\[$DelimBackgroundColor\]\[$DelimForegroundColor\]$DelimText"
+            fi
+        fi
+        if [ $EnableFileStatus ]; then
+            if [ $workingCount -ne 0 ] || $ShowStatusWhenZero; then
+                gitstring+="\[$WorkingBackgroundColor\]\[$WorkingForegroundColor\] +$filesAdded ~$filesModified -$filesDeleted"
+            fi
+            if [ $filesUnmerged -ne 0 ]; then
+                gitstring+=" \[$WorkingBackgroundColor\]\[$WorkingForegroundColor\]!$filesUnmerged"
+            fi
+        fi
+        if [ $filesAdded -ne 0 ]; then
+            gitstring+="\[$UntrackedBackgroundColor\]\[$UntrackedForegroundColor\]$UntrackedText"
+        fi
+        gitstring+=${rebase:+' | \[\e[0m\]'$rebase}
+
+
+        # after-branch text
+        gitstring+="\[$AfterBackgroundColor\]\[$AfterForegroundColor\]$AfterText"
+        # printf -- "%s" "$gitstring"
+        # return
+
+        if [ -n "$isInStash" ]; then
+            gitstring+="\[$StashBackgroundColor\]\[$StashForegroundColor\]"$isInStash
+        fi
+        # if [ -n "$u" ]; then
+        #     gitstring+='\[\e[0;31m\]'$u
+        # fi
         gitstring=$(printf -- "$printf_format" "$gitstring\[$DefaultBackgroundColor\]\[$DefaultForegroundColor\]")
         PS1="$ps1pc_start$gitstring$ps1pc_end"
     else
@@ -434,7 +410,7 @@ __git_ps1_show_upstream ()
 {
     local key value
     local svn_remote svn_url_pattern n
-    local upstream=git legacy="" verbose=""
+    local upstream=git legacy=""
 
     svn_remote=()
     # get some config options from git-config
@@ -459,7 +435,6 @@ __git_ps1_show_upstream ()
     for option in ${GIT_PS1_SHOWUPSTREAM}; do
         case "$option" in
         git|svn) upstream="$option" ;;
-        verbose) verbose=1 ;;
         legacy)  legacy=1  ;;
         esac
     done
@@ -507,27 +482,6 @@ __git_ps1_show_upstream ()
 
     ${behindBy:=0} 2>/dev/null
     ${aheadBy:=0} 2>/dev/null
-
-
-
-    # calculate the result
-    if [[ -n "$verbose" ]]; then
-        if [ $behindBy -gt 0 ] && [ $aheadBy -gt 0 ]; then
-            # diverged from upstream
-            p=" u+$aheadBy-$behindBy"
-        elif [ $behindBy -gt 0 ]; then
-            p=" u-$behindBy"
-        elif [ $aheadBy -gt 0 ]; then
-            # ahead of upstream
-            p=" u+$aheadBy"
-        elif [ $behindBy -eq 0 ] && [ $aheadBy -eq 0 ]; then
-            # equal to upstream
-            p=" u="
-        else
-            # no upstream
-            p=""
-        fi
-    fi
 }
 
 write_prompt() {
