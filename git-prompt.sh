@@ -93,18 +93,6 @@
 __git_ps1 ()
 {
     if [ "$(git config --bool bash.enableGitStatus)" == "false" ]; then return; fi
-    local EnableFileStatus=`git config --bool bash.enableFileStatus`
-    case "$EnableFileStatus" in
-        true)  EnableFileStatus=true ;;
-        false) EnableFileStatus=false ;;
-        *)     EnableFileStatus=true ;;
-    esac
-    local ShowStatusWhenZero=`git config --bool bash.showStatusWhenZero`
-    case "$ShowStatusWhenZero" in
-        true)  ShowStatusWhenZero=true ;;
-        false) ShowStatusWhenZero=false ;;
-        *)     ShowStatusWhenZero=false ;;
-    esac
 
     local DefaultForegroundColor='\e[0;30m' # Default no color
     local DefaultBackgroundColor=
@@ -145,6 +133,25 @@ __git_ps1 ()
 
     local StashForegroundColor='\e[0;34m' # Darker blue
     local StashBackgroundColor=
+
+    local EnableFileStatus=`git config --bool bash.enableFileStatus`
+    case "$EnableFileStatus" in
+        true)  EnableFileStatus=true ;;
+        false) EnableFileStatus=false ;;
+        *)     EnableFileStatus=true ;;
+    esac
+    local ShowStatusWhenZero=`git config --bool bash.showStatusWhenZero`
+    case "$ShowStatusWhenZero" in
+        true)  ShowStatusWhenZero=true ;;
+        false) ShowStatusWhenZero=false ;;
+        *)     ShowStatusWhenZero=false ;;
+    esac
+    local ShowStashState=`git config --bool bash.showStashState`
+    case "$ShowStashState" in
+        true)  ShowStashState=true ;;
+        false) ShowStashState=false ;;
+        *)     ShowStashState=true ;;
+    esac
 
     local AutoRefreshIndex=true
 
@@ -187,9 +194,9 @@ __git_ps1 ()
     local step=""
     local total=""
     if [ -d "$g/rebase-merge" ]; then
-        b="$(cat "$g/rebase-merge/head-name")"
-        step=$(cat "$g/rebase-merge/msgnum")
-        total=$(cat "$g/rebase-merge/end")
+        b=$(cat "$g/rebase-merge/head-name" 2>/dev/null)
+        step=$(cat "$g/rebase-merge/msgnum" 2>/dev/null)
+        total=$(cat "$g/rebase-merge/end" 2>/dev/null)
         if [ -f "$g/rebase-merge/interactive" ]; then
             rebase="|REBASE-i"
         else
@@ -242,10 +249,8 @@ __git_ps1 ()
 
     local isDirtyUnstaged=""
     local isDirtyStaged=""
-    local isInStash=""
-    local u=""
+    local StashText=""
     local isBare=""
-    local p=""
 
     if [ "true" = "$(git rev-parse --is-inside-git-dir 2>/dev/null)" ]; then
         if [ "true" = "$(git rev-parse --is-bare-repository 2>/dev/null)" ]; then
@@ -254,13 +259,10 @@ __git_ps1 ()
             b="GIT_DIR!"
         fi
     elif [ "true" = "$(git rev-parse --is-inside-work-tree 2>/dev/null)" ]; then
-        if [ -n "${GIT_PS1_SHOWSTASHSTATE-}" ]; then
-            git rev-parse --verify refs/stash >/dev/null 2>&1 && isInStash="$"
+        if $ShowStashState; then
+            git rev-parse --verify refs/stash >/dev/null 2>&1 && StashText="$"
         fi
-
-        if [ -n "${GIT_PS1_SHOWUPSTREAM-}" ]; then
-            __git_ps1_show_upstream
-        fi
+        __git_ps1_show_upstream
     fi
 
     # show index status and working directory status
@@ -315,68 +317,61 @@ __git_ps1 ()
         done <<< "`git status -s`"
     fi
 
-    local f=$isDirtyUnstaged$isDirtyStaged$isInStash$u
+    local gitstring=
+    local branchstring="$isBare${b##refs/heads/}"
+    # before-branch text
+    gitstring="\[$BeforeBackgroundColor\]\[$BeforeForegroundColor\]$BeforeText"
+
+    # branch
+    if [ $behindBy -gt 0 ] && [ $aheadBy -gt 0 ]; then
+        gitstring+="\[$BranchBehindAndAheadBackgroundColor\]\[$BranchBehindAndAheadForegroundColor\]$branchstring"
+    elif [ $behindBy -gt 0 ]; then
+        gitstring+="\[$BranchBehindBackgroundColor\]\[$BranchBehindForegroundColor\]$branchstring"
+    elif [ $aheadBy -gt 0 ]; then
+        gitstring+="\[$BranchAheadBackgroundColor\]\[$BranchAheadForegroundColor\]$branchstring"
+    else
+        gitstring+="\[$BranchBackgroundColor\]\[$BranchForegroundColor\]$branchstring"
+    fi
+
+    local indexCount="$(( $indexAdded + $indexModified + $indexDeleted + $indexUnmerged ))"
+    local workingCount="$(( $filesAdded + $filesModified + $filesDeleted + $filesUnmerged ))"
+    # index status
+    if $EnableFileStatus; then
+        if [ $indexCount -ne 0 ] || $ShowStatusWhenZero; then
+            gitstring+="\[$IndexBackgroundColor\]\[$IndexForegroundColor\] +$indexAdded ~$indexModified -$indexDeleted"
+        fi
+        if [ $indexUnmerged -ne 0 ]; then
+            gitstring+=" \[$IndexBackgroundColor\]\[$IndexForegroundColor\]!$indexUnmerged"
+        fi
+        if [ $indexCount -ne 0 ] && ([ $workingCount -ne 0 ] || $ShowStatusWhenZero); then
+            gitstring+="\[$DelimBackgroundColor\]\[$DelimForegroundColor\]$DelimText"
+        fi
+    fi
+    if [ $EnableFileStatus ]; then
+        if [ $workingCount -ne 0 ] || $ShowStatusWhenZero; then
+            gitstring+="\[$WorkingBackgroundColor\]\[$WorkingForegroundColor\] +$filesAdded ~$filesModified -$filesDeleted"
+        fi
+        if [ $filesUnmerged -ne 0 ]; then
+            gitstring+=" \[$WorkingBackgroundColor\]\[$WorkingForegroundColor\]!$filesUnmerged"
+        fi
+    fi
+    if [ $filesAdded -ne 0 ]; then
+        gitstring+="\[$UntrackedBackgroundColor\]\[$UntrackedForegroundColor\]$UntrackedText"
+    fi
+    gitstring+=${rebase:+'\[\e[0m\]'$rebase}
+
+
+    # after-branch text
+    gitstring+="\[$AfterBackgroundColor\]\[$AfterForegroundColor\]$AfterText"
+
+    if $ShowStashState; then
+        gitstring+="\[$StashBackgroundColor\]\[$StashForegroundColor\]"$StashText
+    fi
+    gitstring=`printf -- "$printf_format" "$gitstring\[$DefaultBackgroundColor\]\[$DefaultForegroundColor\] "`
     if $is_pcmode; then
-        local gitstring=
-        local branchstring="$isBare${b##refs/heads/}"
-        # before-branch text
-        gitstring="\[$BeforeBackgroundColor\]\[$BeforeForegroundColor\]$BeforeText"
-
-        # branch
-        if [ $behindBy -gt 0 ] && [ $aheadBy -gt 0 ]; then
-            gitstring+="\[$BranchBehindAndAheadBackgroundColor\]\[$BranchBehindAndAheadForegroundColor\]$branchstring"
-        elif [ $behindBy -gt 0 ]; then
-            gitstring+="\[$BranchBehindBackgroundColor\]\[$BranchBehindForegroundColor\]$branchstring"
-        elif [ $aheadBy -gt 0 ]; then
-            gitstring+="\[$BranchAheadBackgroundColor\]\[$BranchAheadForegroundColor\]$branchstring"
-        else
-            gitstring+="\[$BranchBackgroundColor\]\[$BranchForegroundColor\]$branchstring"
-        fi
-
-        local indexCount="$(( $indexAdded + $indexModified + $indexDeleted + $indexUnmerged ))"
-        local workingCount="$(( $filesAdded + $filesModified + $filesDeleted + $filesUnmerged ))"
-        # index status
-        if $EnableFileStatus; then
-            if [ $indexCount -ne 0 ] || $ShowStatusWhenZero; then
-                gitstring+="\[$IndexBackgroundColor\]\[$IndexForegroundColor\] +$indexAdded ~$indexModified -$indexDeleted"
-            fi
-            if [ $indexUnmerged -ne 0 ]; then
-                gitstring+=" \[$IndexBackgroundColor\]\[$IndexForegroundColor\]!$indexUnmerged"
-            fi
-            if [ $indexCount -ne 0 ] && ([ $workingCount -ne 0 ] || $ShowStatusWhenZero); then
-                gitstring+="\[$DelimBackgroundColor\]\[$DelimForegroundColor\]$DelimText"
-            fi
-        fi
-        if [ $EnableFileStatus ]; then
-            if [ $workingCount -ne 0 ] || $ShowStatusWhenZero; then
-                gitstring+="\[$WorkingBackgroundColor\]\[$WorkingForegroundColor\] +$filesAdded ~$filesModified -$filesDeleted"
-            fi
-            if [ $filesUnmerged -ne 0 ]; then
-                gitstring+=" \[$WorkingBackgroundColor\]\[$WorkingForegroundColor\]!$filesUnmerged"
-            fi
-        fi
-        if [ $filesAdded -ne 0 ]; then
-            gitstring+="\[$UntrackedBackgroundColor\]\[$UntrackedForegroundColor\]$UntrackedText"
-        fi
-        gitstring+=${rebase:+' | \[\e[0m\]'$rebase}
-
-
-        # after-branch text
-        gitstring+="\[$AfterBackgroundColor\]\[$AfterForegroundColor\]$AfterText"
-        # printf -- "%s" "$gitstring"
-        # return
-
-        if [ -n "$isInStash" ]; then
-            gitstring+="\[$StashBackgroundColor\]\[$StashForegroundColor\]"$isInStash
-        fi
-        # if [ -n "$u" ]; then
-        #     gitstring+='\[\e[0;31m\]'$u
-        # fi
-        gitstring=$(printf -- "$printf_format" "$gitstring\[$DefaultBackgroundColor\]\[$DefaultForegroundColor\]")
         PS1="$ps1pc_start$gitstring$ps1pc_end"
     else
-        # NO color option unless in PROMPT_COMMAND mode
-        printf -- "$printf_format" "$branchstring${f:+ $f}$rebase"
+        printf -- "$printf_format" "$gitstring"
     fi
     aheadBy="$aheadBy_"
     behindBy="$behindBy_"
@@ -404,7 +399,6 @@ __gitdir ()
     fi
 }
 
-# stores the divergence from upstream in $p
 # used by GIT_PS1_SHOWUPSTREAM
 __git_ps1_show_upstream ()
 {
@@ -468,7 +462,7 @@ __git_ps1_show_upstream ()
     esac
 
     # Find how many commits we are ahead/behind our upstream
-    if [[ -z "$legacy" ]]; then
+    if [ -z "$legacy" ]; then
         IFS=$' \t\n' read -r behindBy aheadBy <<< "`git rev-list --count --left-right $upstream...HEAD 2>/dev/null`"
     else
         # produce equivalent output to --count for older versions of git
