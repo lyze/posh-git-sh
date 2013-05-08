@@ -187,9 +187,9 @@ __git_ps1 ()
     local step=""
     local total=""
     if [ -d "$g/rebase-merge" ]; then
-        b="$(cat "$g/rebase-merge/head-name")"
-        step=$(cat "$g/rebase-merge/msgnum")
-        total=$(cat "$g/rebase-merge/end")
+        b=$(cat "$g/rebase-merge/head-name" 2>/dev/null)
+        step=$(cat "$g/rebase-merge/msgnum" 2>/dev/null)
+        total=$(cat "$g/rebase-merge/end" 2>/dev/null)
         if [ -f "$g/rebase-merge/interactive" ]; then
             rebase="|REBASE-i"
         else
@@ -358,7 +358,7 @@ __git_ps1 ()
         if [ $filesAdded -ne 0 ]; then
             gitstring+="\[$UntrackedBackgroundColor\]\[$UntrackedForegroundColor\]$UntrackedText"
         fi
-        gitstring+=${rebase:+' | \[\e[0m\]'$rebase}
+        gitstring+=${rebase:+'\[\e[0m\]'$rebase}
 
 
         # after-branch text
