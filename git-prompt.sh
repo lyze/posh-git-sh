@@ -355,9 +355,9 @@ __git_ps1 ()
             gitstring+=" \[$WorkingBackgroundColor\]\[$WorkingForegroundColor\]!$filesUnmerged"
         fi
     fi
-    if [ $filesAdded -ne 0 ]; then
-        gitstring+="\[$UntrackedBackgroundColor\]\[$UntrackedForegroundColor\]$UntrackedText"
-    fi
+    # if [ $filesAdded -ne 0 ]; then
+    #     gitstring+="\[$UntrackedBackgroundColor\]\[$UntrackedForegroundColor\]$UntrackedText"
+    # fi
     gitstring+=${rebase:+'\[\e[0m\]'$rebase}
 
 
