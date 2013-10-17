@@ -1,4 +1,4 @@
-hsop-git
+posh-git-bash
 ========
 
 This my first venture into bash scripting, so I decided to make a port of posh-git, which, in my humble opinion, is
