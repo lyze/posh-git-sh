@@ -94,7 +94,7 @@ __git_ps1 ()
 {
     if [ "$(git config --bool bash.enableGitStatus)" == "false" ]; then return; fi
 
-    local DefaultForegroundColor='\e[0;30m' # Default no color
+    local DefaultForegroundColor='\e[m' # Default no color
     local DefaultBackgroundColor=
 
     local BeforeText=' ['
