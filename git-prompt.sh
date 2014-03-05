@@ -275,7 +275,7 @@ __git_ps1 ()
         local filesModified=0
         local filesDeleted=0
         local filesUnmerged=0
-        while IFS=" " read -r tag rest
+        while IFS="\n" read -r tag rest
         do
             case "${tag:0:1}" in
                 A )
