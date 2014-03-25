@@ -4,7 +4,7 @@
 # Based on the earlier work by Shawn O. Pearce <spearce@spearce.org>
 # Distributed under the GNU General Public License, version 2.0.
 #
-# This script allows you to see the current branch in your prompt, 
+# This script allows you to see the current branch in your prompt,
 # posh-git style
 #
 # To enable:
@@ -37,10 +37,10 @@
 # ==============
 #
 # If you would like to remove the prompt information for a particular
-# repository (i.e. for a large repository) set bash.enableGitStatus to 
+# repository (i.e. for a large repository) set bash.enableGitStatus to
 # false in the local git config. Alternately, if the key bash.enableFileStatus
 # is set to false, then index and working tree information will be suppressed,
-# but current branch information will still be shown. 
+# but current branch information will still be shown.
 #
 # You can also see if currently something is stashed, by setting
 # GIT_PS1_SHOWSTASHSTATE to a nonempty value. If something is stashed,
@@ -103,11 +103,11 @@ __git_ps1 ()
     local DelimText=' |'
     local DelimForegroundColor='\e[1;33m' # Yellow
     local DelimBackgroundColor=
- 
+
     local AfterText=']'
     local AfterForegroundColor='\e[1;33m' # Yellow
     local AfterBackgroundColor=
- 
+
     local BranchForegroundColor='\e[1;36m' # Cyan
     local BranchBackgroundColor=
     local BranchAheadForegroundColor='\e[1;32m' # Green
@@ -116,17 +116,17 @@ __git_ps1 ()
     local BranchBehindBackgroundColor=
     local BranchBehindAndAheadForegroundColor='\e[1;33m' # Yellow
     local BranchBehindAndAheadBackgroundColor=
- 
+
     local BeforeIndexText=""
     local BeforeIndexForegroundColor='\e[1;32m' #Dark green
     local BeforeIndexBackgroundColor=
- 
+
     local IndexForegroundColor='\e[1;32m' # Dark green
     local IndexBackgroundColor=
- 
+
     local WorkingForegroundColor='\e[0;31m' # Dark red
     local WorkingBackgroundColor=
- 
+
     local UntrackedText=' !'
     local UntrackedForegroundColor='\e[0;31m' # Dark red
     local UntrackedBackgroundColor=
@@ -167,7 +167,7 @@ __git_ps1 ()
     local printf_format='%s'
 
     case "$#" in
-        2|3) 
+        2|3)
             is_pcmode=true
             ps1pc_start="$1"
             ps1pc_end="$2"
@@ -176,7 +176,7 @@ __git_ps1 ()
         0|1)
             printf_format="${1:-$printf_format}"
             ;;
-        *)  
+        *)
             return
             ;;
     esac
@@ -295,7 +295,7 @@ __git_ps1 ()
                     ;;
                 U )
                     (( indexUnmerged++ ))
-                    ;;                                  
+                    ;;
             esac
             case "${tag:1:1}" in
                 \? )
@@ -312,7 +312,7 @@ __git_ps1 ()
                     ;;
                 U )
                     (( filesUnmerged++ ))
-                    ;;  
+                    ;;
             esac
         done <<< "`git status -s`"
     fi
@@ -467,17 +467,17 @@ __git_ps1_show_upstream ()
     else
         # produce equivalent output to --count for older versions of git
         while IFS=$' \t\n' read -r commit; do
-            case "$commit" in 
+            case "$commit" in
             "<*") (( behindBy++ )) ;;
             ">*") (( aheadBy++ ))  ;;
             esac
         done <<< "`git rev-list --left-right $upstream...HEAD 2>/dev/null`"
     fi
 
-    ${behindBy:=0} 2>/dev/null
-    ${aheadBy:=0} 2>/dev/null
+    echo ${behindBy:=0} >/dev/null
+    echo ${aheadBy:=0} >/dev/null
 }
 
 write_prompt() {
-    printf -- 
+    printf --
 }
