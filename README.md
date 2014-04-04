@@ -129,5 +129,7 @@ find one, or `@{upstream}` otherwise.
 
     * legacy    don't use the '--count' option available in recent versions of
                 `git-rev-list`
+                
     * git       always compare `HEAD` to `@{upstream}`
+    
     * svn       always compare `HEAD` to your `SVN` upstream
