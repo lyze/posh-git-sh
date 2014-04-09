@@ -367,7 +367,7 @@ __git_ps1 ()
     if $ShowStashState; then
         gitstring+="\[$StashBackgroundColor\]\[$StashForegroundColor\]"$StashText
     fi
-    gitstring=`printf -- "$printf_format" "$gitstring\[$DefaultBackgroundColor\]\[$DefaultForegroundColor\] "`
+    gitstring=`printf -- "$printf_format" "$gitstring\[$DefaultBackgroundColor\]\[$DefaultForegroundColor\]"`
     if $is_pcmode; then
         PS1="$ps1pc_start$gitstring$ps1pc_end"
     else
