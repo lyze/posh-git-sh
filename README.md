@@ -24,7 +24,7 @@ INSTALLATION INSTRUCTIONS
     strings you would put in `$PS1` before and after the status string generated
     by the git-prompt machinery. For example, the following
 
-        PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'
+        PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'$PROMPT_COMMAND
 
     will show username, at-sign, host, colon, cwd, then various status strings,
     followed by dollar and space, as your prompt. Optionally, you can supply a
