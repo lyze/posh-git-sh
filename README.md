@@ -19,17 +19,18 @@ INSTALLATION INSTRUCTIONS
 
         source ~/git-prompt.sh
 
-3.  a. If you are using bash, `__git_ps1` can be used for
-    `PROMPT_COMMAND` with two parameters, `<pre>` and `<post>`, which are
-    strings you would put in `$PS1` before and after the status string generated
-    by the git-prompt machinery. For example, the following
+3.  You have two choices now:
 
-        PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ "'$PROMPT_COMMAND
+    a. If you are using bash, you should call `__git_ps1` in your `PROMPT_COMMAND` 
+    variable. The function `__git_ps1` takes two parameters as in 
+    `__git_ps1 <string_to_prepend> <string_to_append>`. This function updates `PS1` 
+    accordingly. For example, the following
+
+        PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ ";'$PROMPT_COMMAND
 
     will show username, at-sign, host, colon, cwd, then various status strings,
-    followed by dollar and space, as your prompt. Optionally, you can supply a
-    third argument with a printf format string to fine-tune the output of the
-    branch status.
+    followed by dollar and space, as your prompt. This invocation prepends this
+    instruction to the existing value of `PROMPT_COMMAND`. 
 
 
 The Prompt
@@ -74,7 +75,7 @@ following `git status`:
     #
     #        new.file
 
-
+![Example usage](http://i.imgur.com/vNShFtg.png)
 
 CONFIG OPTIONS
 ==============
