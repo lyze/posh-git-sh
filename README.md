@@ -1,9 +1,17 @@
 posh-git-bash
-========
+=============
 
-This my first venture into bash scripting, so I decided to make a port of
+Background
+----------
+
+This was my first venture into bash scripting, so I decided to make a port of
 posh-git, which, in my humble opinion, is fantastic (and can be found at found
-at https://github.com/dahlbyk/posh-git).
+at https://github.com/dahlbyk/posh-git). 
+
+I wanted a simple solution to display the status of my git prompt in my shell. 
+Furthermore, I wanted it to be easy to set up, so that I wouldn't have to download
+multiple files and organize them somewhere. As a result, here we are with this single
+monolithic shell script to do it all.
 
 I based my work off of
 https://github.com/git/git/blob/master/contrib/completion/git-prompt.sh
@@ -13,7 +21,7 @@ it. Please do not hesitate to contact me about any issues or requests.
 
 
 INSTALLATION INSTRUCTIONS
-========================
+=========================
 1. Copy this file to somewhere (e.g. `~/git-prompt.sh`).
 2. Add the following line to your `.bashrc`:
 
