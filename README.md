@@ -19,9 +19,7 @@ INSTALLATION INSTRUCTIONS
 
         source ~/git-prompt.sh
 
-3.  You have two choices now:
-
-    a. If you are using bash, you should call `__git_ps1` in your `PROMPT_COMMAND` 
+3.  If you are using bash, you should call `__git_ps1` in your `PROMPT_COMMAND` 
     variable. The function `__git_ps1` takes two parameters as in 
     `__git_ps1 <string_to_prepend> <string_to_append>`. This function updates `PS1` 
     accordingly. For example, the following
