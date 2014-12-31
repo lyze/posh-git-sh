@@ -159,12 +159,9 @@ __git_ps1 ()
     local WorkingForegroundColor='\e[0;31m' # Dark red
     local WorkingBackgroundColor=
 
-    local UntrackedText=' !'
-    local UntrackedForegroundColor='\e[0;31m' # Dark red
-    local UntrackedBackgroundColor=
-
     local StashForegroundColor='\e[0;34m' # Darker blue
     local StashBackgroundColor=
+
 
     local EnableFileStatus=`git config --bool bash.enableFileStatus`
     case "$EnableFileStatus" in
@@ -185,11 +182,7 @@ __git_ps1 ()
         *)     ShowStashState=true ;;
     esac
 
-    local AutoRefreshIndex=true
-
-    local aheadBy_=$aheadBy
-    local behindBy_=$behindBy
-    aheadBy=0
+    aheadBy=0                   # these globals are updated by __git_ps1_showupstream
     behindBy=0
 
     local is_pcmode=false
@@ -257,8 +250,12 @@ __git_ps1 ()
 
         b="$(git symbolic-ref HEAD 2>/dev/null)" || {
             is_detached=true
+            local output="$(git config -z --get bash.describeStyle)"
+            if [ -n "$output" ]; then
+                GIT_PS1_DESCRIBESTYLE=$output
+            fi
             b="$(
-            case "${GIT_PS1_DESCRIBE_STYLE-}" in
+            case "${GIT_PS1_DESCRIBESTYLE-}" in
             (contains)
                 git describe --contains HEAD ;;
             (branch)
@@ -346,7 +343,7 @@ __git_ps1 ()
                     (( filesUnmerged++ ))
                     ;;
             esac
-        done <<< "`git status -s`"
+        done <<< "`git status --porcelain`"
     fi
 
     local gitstring=
@@ -387,11 +384,7 @@ __git_ps1 ()
             gitstring+=" \[$WorkingBackgroundColor\]\[$WorkingForegroundColor\]!$filesUnmerged"
         fi
     fi
-    # if [ $filesAdded -ne 0 ]; then
-    #     gitstring+="\[$UntrackedBackgroundColor\]\[$UntrackedForegroundColor\]$UntrackedText"
-    # fi
     gitstring+=${rebase:+'\[\e[0m\]'$rebase}
-
 
     # after-branch text
     gitstring+="\[$AfterBackgroundColor\]\[$AfterForegroundColor\]$AfterText"
@@ -405,8 +398,6 @@ __git_ps1 ()
     else
         printf -- "$printf_format" "$gitstring"
     fi
-    aheadBy="$aheadBy_"
-    behindBy="$behindBy_"
 }
 
 __gitdir ()
@@ -494,6 +485,8 @@ __git_ps1_show_upstream ()
         ;;
     esac
 
+    aheadBy=0
+    behindBy=0
     # Find how many commits we are ahead/behind our upstream
     if [ -z "$legacy" ]; then
         IFS=$' \t\n' read -r behindBy aheadBy <<< "`git rev-list --count --left-right $upstream...HEAD 2>/dev/null`"
@@ -506,9 +499,6 @@ __git_ps1_show_upstream ()
             esac
         done <<< "`git rev-list --left-right $upstream...HEAD 2>/dev/null`"
     fi
-
-    echo ${behindBy:=0} >/dev/null
-    echo ${aheadBy:=0} >/dev/null
 }
 
 write_prompt() {
