@@ -53,6 +53,7 @@
 # setting things in the local git config for
 # per-repository options.
 # ```
+# bash.describeStyle
 # bash.enableFileStatus
 # bash.enableGitStatus
 # bash.showStatusWhenZero
