@@ -122,9 +122,7 @@ bash.enableFileStatus
 Option | Description
 ------ | -----------
 true   | _Default_. The script will query for all file indicators every time.
-false  | No file indicators will be displayed. The script will not query
-         upstream for differences. Branch color-coding information is still
-         displayed.
+false  | No file indicators will be displayed. The script will not query upstream for differences. Branch color-coding information is still displayed.
 
 bash.enableGitStatus
 --------------------
@@ -147,10 +145,8 @@ bash.showStatusWhenZero
 
 Option | Description
 ------ | -----------
-true   | Indicators will be shown even if there are no updates to the index or
-         working tree.
-false  | _Default_. No file change indicators will be shown if there are no
-         changes to the index or working tree.
+true   | Indicators will be shown even if there are no updates to the index or working tree. 
+false  | _Default_. No file change indicators will be shown if there are no changes to the index or working tree.
 
 bash.showUpstream
 -----------------
@@ -161,7 +157,6 @@ environment variable `GIT_PS1_SHOWUPSTREAM`.
 
 Option | Description
 ------ | -----------
-legacy | Does not use the `--count` option available in recent versions of
-         `git-rev-list`
+legacy | Does not use the `--count` option available in recent versions of `git-rev-list`
 git    | _Default_. Always compares `HEAD` to `@{upstream}`
 svn    | Always compares `HEAD` to `SVN` upstream
