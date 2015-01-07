@@ -49,9 +49,11 @@
 # CONFIG OPTIONS
 # ==============
 #
-# This should work out of the box, but there are some options available, mostly
-# setting things in the local git config for
-# per-repository options.
+# This script should work out of the box. Available options are set through
+# your git configuration files. This allows you to control the prompt display on a
+# per-repository basis. These files are most likely called `.gitconfig`; an 
+# example illustrating the syntax of these files can be found at
+# http://git-scm.com/docs/git-config#_example.
 # ```
 # bash.describeStyle
 # bash.enableFileStatus
