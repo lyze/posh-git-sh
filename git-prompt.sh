@@ -355,11 +355,12 @@ __git_ps1 ()
     gitstring="\[$BeforeBackgroundColor\]\[$BeforeForegroundColor\]$BeforeText"
 
     # branch
-    if [ $behindBy -gt 0 ] && [ $aheadBy -gt 0 ]; then
+
+    if (( $behindBy > 0 && $aheadBy > 0 )); then
         gitstring+="\[$BranchBehindAndAheadBackgroundColor\]\[$BranchBehindAndAheadForegroundColor\]$branchstring"
-    elif [ $behindBy -gt 0 ]; then
+    elif (( $behindBy > 0 )); then
         gitstring+="\[$BranchBehindBackgroundColor\]\[$BranchBehindForegroundColor\]$branchstring"
-    elif [ $aheadBy -gt 0 ]; then
+    elif (( $aheadBy > 0 )); then
         gitstring+="\[$BranchAheadBackgroundColor\]\[$BranchAheadForegroundColor\]$branchstring"
     else
         gitstring+="\[$BranchBackgroundColor\]\[$BranchForegroundColor\]$branchstring"
@@ -369,21 +370,21 @@ __git_ps1 ()
     local workingCount="$(( $filesAdded + $filesModified + $filesDeleted + $filesUnmerged ))"
     # index status
     if $EnableFileStatus; then
-        if [ $indexCount -ne 0 ] || $ShowStatusWhenZero; then
+        if (( $indexCount != 0 )) || $ShowStatusWhenZero; then
             gitstring+="\[$IndexBackgroundColor\]\[$IndexForegroundColor\] +$indexAdded ~$indexModified -$indexDeleted"
         fi
-        if [ $indexUnmerged -ne 0 ]; then
+        if (( $indexUnmerged != 0 )); then
             gitstring+=" \[$IndexBackgroundColor\]\[$IndexForegroundColor\]!$indexUnmerged"
         fi
-        if [ $indexCount -ne 0 ] && ([ $workingCount -ne 0 ] || $ShowStatusWhenZero); then
+        if (( $indexCount != 0 && ($workingCount != 0 || $ShowStatusWhenZero) )); then
             gitstring+="\[$DelimBackgroundColor\]\[$DelimForegroundColor\]$DelimText"
         fi
     fi
-    if [ $EnableFileStatus ]; then
-        if [ $workingCount -ne 0 ] || $ShowStatusWhenZero; then
+    if $EnableFileStatus; then
+        if (( $workingCount != 0 )) || $ShowStatusWhenZero; then
             gitstring+="\[$WorkingBackgroundColor\]\[$WorkingForegroundColor\] +$filesAdded ~$filesModified -$filesDeleted"
         fi
-        if [ $filesUnmerged -ne 0 ]; then
+        if (( $filesUnmerged != 0 )); then
             gitstring+=" \[$WorkingBackgroundColor\]\[$WorkingForegroundColor\]!$filesUnmerged"
         fi
     fi
@@ -468,7 +469,7 @@ __git_ps1_show_upstream ()
         # (git-svn uses essentially the same procedure internally)
         local svn_upstream=($(git log --first-parent -1 \
                     --grep="^git-svn-id: \(${svn_url_pattern#??}\)" 2>/dev/null))
-        if [[ 0 -ne ${#svn_upstream[@]} ]]; then
+        if (( 0 != ${#svn_upstream[@]} )); then
             svn_upstream=${svn_upstream[ ${#svn_upstream[@]} - 2 ]}
             svn_upstream=${svn_upstream%@*}
             local n_stop="${#svn_remote[@]}"
@@ -502,6 +503,8 @@ __git_ps1_show_upstream ()
             esac
         done <<< "`git rev-list --left-right $upstream...HEAD 2>/dev/null`"
     fi
+    : ${aheadBy:=0}
+    : ${behindBy:=0}
 }
 
 write_prompt() {
