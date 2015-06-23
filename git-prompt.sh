@@ -164,6 +164,7 @@ __git_ps1 ()
 
     local StashForegroundColor='\e[0;34m' # Darker blue
     local StashBackgroundColor=
+    local StashText='$'
 
 
     local EnableFileStatus=`git config --bool bash.enableFileStatus`
@@ -281,7 +282,7 @@ __git_ps1 ()
 
     local isDirtyUnstaged=""
     local isDirtyStaged=""
-    local StashText=""
+    local hasStash=false
     local isBare=""
 
     if [ "true" = "$(git rev-parse --is-inside-git-dir 2>/dev/null)" ]; then
@@ -292,7 +293,7 @@ __git_ps1 ()
         fi
     elif [ "true" = "$(git rev-parse --is-inside-work-tree 2>/dev/null)" ]; then
         if $ShowStashState; then
-            git rev-parse --verify refs/stash >/dev/null 2>&1 && StashText="$"
+            git rev-parse --verify refs/stash >/dev/null 2>&1 && hasStash=true
         fi
         __git_ps1_show_upstream
     fi
@@ -393,7 +394,7 @@ __git_ps1 ()
     # after-branch text
     gitstring+="\[$AfterBackgroundColor\]\[$AfterForegroundColor\]$AfterText"
 
-    if $ShowStashState; then
+    if $ShowStashState && $hasStash; then
         gitstring+="\[$StashBackgroundColor\]\[$StashForegroundColor\]"$StashText
     fi
     gitstring=`printf -- "$printf_format" "$gitstring\[$DefaultBackgroundColor\]\[$DefaultForegroundColor\]"`
