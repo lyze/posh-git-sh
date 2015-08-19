@@ -51,7 +51,7 @@
 #
 # This script should work out of the box. Available options are set through
 # your git configuration files. This allows you to control the prompt display on a
-# per-repository basis. These files are most likely called `.gitconfig`; an 
+# per-repository basis. These files are most likely called `.gitconfig`; an
 # example illustrating the syntax of these files can be found at
 # http://git-scm.com/docs/git-config#_example.
 # ```
@@ -347,7 +347,7 @@ __git_ps1 ()
                     (( filesUnmerged++ ))
                     ;;
             esac
-        done <<< "`git status --porcelain`"
+        done <<< "`git status --porcelain 2>/dev/null`"
     fi
 
     local gitstring=
