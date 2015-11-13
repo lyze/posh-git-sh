@@ -27,12 +27,12 @@ Installation Instructions
 
         source ~/git-prompt.sh
 
-3.  If you are using bash, you should call `__git_ps1` in your `PROMPT_COMMAND`
-    variable. The function `__git_ps1` takes two parameters as in
-    `__git_ps1 <string_to_prepend> <string_to_append>`. This function updates `PS1`
+3.  If you are using bash, you should call `__posh_git_ps1` in your `PROMPT_COMMAND`
+    variable. The function `__posh_git_ps1` takes two parameters as in
+    `__posh_git_ps1 <string_to_prepend> <string_to_append>`. This function updates `PS1`
     accordingly. For example, the following
 
-        PROMPT_COMMAND='__git_ps1 "\u@\h:\w" "\\\$ ";'$PROMPT_COMMAND
+        PROMPT_COMMAND='__posh_git_ps1 "\u@\h:\w" "\\\$ ";'$PROMPT_COMMAND
 
     will show username, at-sign, host, colon, cwd, then various status strings,
     followed by dollar and space, as your prompt. This invocation prepends this
@@ -85,7 +85,7 @@ following `git status`:
 
 To get the above prompt display, I have the following in my `.bashrc`:
 
-        export PROMPT_COMMAND='__git_ps1 "\\[\[\e[0;32m\]\u@\h \[\e[0;33m\]\w" " \[\e[1;34m\]\n\$\[\e[0m\] ";'$PROMPT_COMMAND
+        export PROMPT_COMMAND='__posh_git_ps1 "\\[\[\e[0;32m\]\u@\h \[\e[0;33m\]\w" " \[\e[1;34m\]\n\$\[\e[0m\] ";'$PROMPT_COMMAND
 
 The prompt also lets you know if you are currently in the middle of a cherry-pick, a merge, a rebase, etc.
 Try it out and let me know what you think!
@@ -95,7 +95,7 @@ Configuration Options
 
 This script should work out of the box. Available options are set through
 your git configuration files. This allows you to control the prompt display on a
-per-repository basis. These files are most likely called `.gitconfig`; an 
+per-repository basis. These files are most likely called `.gitconfig`; an
 example illustrating the syntax of these files can be found at
 http://git-scm.com/docs/git-config#_example.
 ```
@@ -149,13 +149,13 @@ bash.showStatusWhenZero
 
 Option | Description
 ------ | -----------
-true   | Indicators will be shown even if there are no updates to the index or working tree. 
+true   | Indicators will be shown even if there are no updates to the index or working tree.
 false  | _Default_. No file change indicators will be shown if there are no changes to the index or working tree.
 
 bash.showUpstream
 -----------------
 
-By default, `__git_ps1` will compare `HEAD` to your `SVN` upstream if it can
+By default, `__posh_git_ps1` will compare `HEAD` to your `SVN` upstream if it can
 find one, or `@{upstream}` otherwise. This is also controlled by the legacy
 environment variable `GIT_PS1_SHOWUPSTREAM`.
 
