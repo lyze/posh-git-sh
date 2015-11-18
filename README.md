@@ -23,7 +23,9 @@ it. Please do not hesitate to contact me about any issues or requests.
 Installation Instructions
 =========================
 1. Copy this file to somewhere (e.g. `~/git-prompt.sh`).
-2. Add the following line to your `.bashrc` for most version of linux and unix, however if you are using a MAC your changes need to be in ~/.bash_profile:
+2. Add the following line to your `~/.bashrc`. (You may need to update
+   your `~/.bash_profile` to source your `~/.bashrc`, or you can just modify
+   `~/.bash_profile` directly.)
 
         source ~/git-prompt.sh
 
