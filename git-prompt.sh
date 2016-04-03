@@ -442,7 +442,7 @@ __posh_git_ps1_upstream_divergence ()
         case "$key" in
         bash.showUpstream)
             GIT_PS1_SHOWUPSTREAM="$value"
-            if [[ -z "${GIT_PS1_SHOWUPSTREAM}" ]]; then
+            if [ -z "${GIT_PS1_SHOWUPSTREAM}" ]; then
                 return
             fi
             ;;
@@ -479,13 +479,13 @@ __posh_git_ps1_upstream_divergence ()
                 svn_upstream=${svn_upstream#${svn_remote[$n]}}
             done
 
-            if [[ -z "$svn_upstream" ]]; then
+            if [ -z "$svn_upstream" ]; then
                 # default branch name for checkouts with no layout:
                 upstream=${GIT_SVN_ID:-git-svn}
             else
                 upstream=${svn_upstream#/}
             fi
-        elif [[ "svn+git" = "$upstream" ]]; then
+        elif [ "svn+git" = "$upstream" ]; then
             upstream="@{upstream}"
         fi
         ;;
