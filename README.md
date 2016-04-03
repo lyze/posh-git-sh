@@ -31,22 +31,31 @@ The Prompt
 
 By default, the status summary has the following format:
 
-    [{HEAD-name} +A ~B -C !D | +E ~F -G !H]
+    [{HEAD-name} x +A ~B -C !D | +E ~F -G !H]
 
-* `{HEAD-name}` is the current branch, or the SHA of a detached HEAD
- * Cyan means the branch matches its remote
- * Green means the branch is ahead of its remote (green light to push)
- * Red means the branch is behind its remote
- * Yellow means the branch is both ahead of and behind its remote
-* ABCD represent the index; EFGH represent the working directory
- * `+` = Added files
- * `~` = Modified files
- * `-` = Removed files
- * `!` = Conflicted files
- * As in `git status`, index status is dark green and working directory status
- is dark red
+* `{HEAD-name}` is the current branch, or the SHA of a detached HEAD. The color
+  of `{HEAD-name}` represents the divergence from upstream. `{HEAD-name}` also
+  changes to indicate progress if you are in the middle of a cherry-pick, a
+  merge, a rebase, etc.
+  * `cyan`   the branch matches its remote
+  * `green`  the branch is ahead of its remote (green light to push)
+  * `red`    the branch is behind its remote
+  * `yellow` the branch is both ahead of and behind its remote
+* `x` is a symbol that represents the divergence from upstream.
+  * `≡` the branch matches its remote
+  * `↑` the branch is ahead of its remote
+  * `↓` the branch is behind its remote
+  * `↕` the branch is both ahead of and behind its remote
+* Status changes are indicated by prefixes to `A` through `H`, where `A` through
+  `D` represent counts for the index and `E` through `H` represent counts for
+  the working directory. As in `git status`, index status is dark green and
+  working directory status is dark red.
+  * `+` added
+  * `~` modified
+  * `-` removed
+  * `!` conflicting
 
-For example, a status of `[master +0 ~2 -1 | +1 ~1 -0]` corresponds to the
+For example, a status of `[master ≡ +0 ~2 -1 | +1 ~1 -0]` corresponds to the
 following `git status`:
 
     # On branch master
@@ -56,26 +65,27 @@ following `git status`:
     #
     #        modified:   this-changed.txt
     #        modified:   this-too.txt
-    #        deleted:    gone.ps1
+    #        deleted:    gone.txt
     #
     # Changed but not updated:
     #   (use "git add <file>..." to update what will be committed)
     #   (use "git checkout -- <file>..." to discard changes in working directory)
     #
-    #        modified:   not-staged.ps1
+    #        modified:   not-staged.txt
     #
     # Untracked files:
     #   (use "git add <file>..." to include in what will be committed)
     #
-    #        new.file
+    #        new.txt
 
-![Example usage](http://i.imgur.com/vNShFtg.png)
+### Example setup
+
+![Example usage](http://i.imgur.com/nEtBjR2.png)
 
 To get the above prompt display, I have the following in my `.bashrc`:
 
         export PROMPT_COMMAND='__posh_git_ps1 "\\[\[\e[0;32m\]\u@\h \[\e[0;33m\]\w" " \[\e[1;34m\]\n\$\[\e[0m\] ";'$PROMPT_COMMAND
 
-The prompt also lets you know if you are currently in the middle of a cherry-pick, a merge, a rebase, etc.
 Try it out and let me know what you think!
 
 
