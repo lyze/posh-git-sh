@@ -186,8 +186,8 @@ __posh_git_ps1 ()
         *)     ShowStashState=true ;;
     esac
 
-    aheadBy=0                   # these globals are updated by __posh_git_ps1_showupstream
-    behindBy=0
+    __POSH_BRANCH_AHEAD_BY=0 # these globals are updated by __posh_git_ps1_upstream_divergence
+    __POSH_BRANCH_BEHIND_BY=0
 
     local is_pcmode=false
     local is_detached=false
@@ -295,7 +295,7 @@ __posh_git_ps1 ()
         if $ShowStashState; then
             git rev-parse --verify refs/stash >/dev/null 2>&1 && hasStash=true
         fi
-        __posh_git_ps1_show_upstream
+        __posh_git_ps1_upstream_divergence
     fi
 
     # show index status and working directory status
@@ -357,11 +357,11 @@ __posh_git_ps1 ()
 
     # branch
 
-    if (( $behindBy > 0 && $aheadBy > 0 )); then
+    if (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
         gitstring+="\[$BranchBehindAndAheadBackgroundColor\]\[$BranchBehindAndAheadForegroundColor\]$branchstring"
-    elif (( $behindBy > 0 )); then
+    elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
         gitstring+="\[$BranchBehindBackgroundColor\]\[$BranchBehindForegroundColor\]$branchstring"
-    elif (( $aheadBy > 0 )); then
+    elif (( $__POSH_BRANCH_AHEAD_BY > 0 )); then
         gitstring+="\[$BranchAheadBackgroundColor\]\[$BranchAheadForegroundColor\]$branchstring"
     else
         gitstring+="\[$BranchBackgroundColor\]\[$BranchForegroundColor\]$branchstring"
@@ -427,13 +427,13 @@ __posh_gitdir ()
     fi
 }
 
-# Updates the global variables `aheadBy` and `behindBy`
-__posh_git_ps1_show_upstream ()
+# Updates the global variables `__POSH_BRANCH_AHEAD_BY` and `__POSH_BRANCH_BEHIND_BY`
+__posh_git_ps1_upstream_divergence ()
 {
     local key value
-    local svn_remote svn_url_pattern n
+    local svn_remote svn_url_pattern
     local upstream=git          # default
-    legacy=""
+    local legacy=""
 
     svn_remote=()
     # get some config options from git-config
@@ -474,7 +474,8 @@ __posh_git_ps1_show_upstream ()
             svn_upstream=${svn_upstream[ ${#svn_upstream[@]} - 2 ]}
             svn_upstream=${svn_upstream%@*}
             local n_stop="${#svn_remote[@]}"
-            for ((n=1; n <= n_stop; n++)); do
+            local n
+            for (( n=1; n <= n_stop; n++ )); do
                 svn_upstream=${svn_upstream#${svn_remote[$n]}}
             done
 
@@ -490,20 +491,20 @@ __posh_git_ps1_show_upstream ()
         ;;
     esac
 
-    aheadBy=0
-    behindBy=0
+    __POSH_BRANCH_AHEAD_BY=0
+    __POSH_BRANCH_BEHIND_BY=0
     # Find how many commits we are ahead/behind our upstream
     if [ -z "$legacy" ]; then
-        IFS=$' \t\n' read -r behindBy aheadBy <<< "`git rev-list --count --left-right $upstream...HEAD 2>/dev/null`"
+        IFS=$' \t\n' read -r __POSH_BRANCH_BEHIND_BY __POSH_BRANCH_AHEAD_BY <<< "`git rev-list --count --left-right $upstream...HEAD 2>/dev/null`"
     else
         # produce equivalent output to --count for older versions of git
         while IFS=$' \t\n' read -r commit; do
             case "$commit" in
-            "<*") (( behindBy++ )) ;;
-            ">*") (( aheadBy++ ))  ;;
+            "<*") (( __POSH_BRANCH_BEHIND_BY++ )) ;;
+            ">*") (( __POSH_BRANCH_AHEAD_BY++ ))  ;;
             esac
         done <<< "`git rev-list --left-right $upstream...HEAD 2>/dev/null`"
     fi
-    : ${aheadBy:=0}
-    : ${behindBy:=0}
+    : ${__POSH_BRANCH_AHEAD_BY:=0}
+    : ${__POSH_BRANCH_BEHIND_BY:=0}
 }
