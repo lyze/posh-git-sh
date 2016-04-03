@@ -1,6 +1,7 @@
 # bash/zsh git prompt support
 #
-# Copyright (C) 2015 David Xu
+# Copyright (C) 2016 David Xu
+#
 # Based on the earlier work by Shawn O. Pearce <spearce@spearce.org>
 # Distributed under the GNU General Public License, version 2.0.
 #
