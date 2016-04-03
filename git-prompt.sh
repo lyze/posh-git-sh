@@ -143,6 +143,11 @@ __posh_git_ps1 ()
     local AfterForegroundColor='\e[1;33m' # Yellow
     local AfterBackgroundColor=
 
+    local BranchIdenticalStatusToSymbol=$'\xE2\x89\xA1' # Three horizontal lines
+    local BranchAheadStatusSymbol=$'\xE2\x86\x91' # Up Arrow
+    local BranchBehindStatusSymbol=$'\xE2\x86\x93' # Down Arrow
+    local BranchBehindAndAheadStatusSymbol=$'\xE2\x86\x95' # Up and Down Arrow
+
     local BranchForegroundColor='\e[1;36m' # Cyan
     local BranchBackgroundColor=
     local BranchAheadForegroundColor='\e[1;32m' # Green
@@ -352,19 +357,20 @@ __posh_git_ps1 ()
 
     local gitstring=
     local branchstring="$isBare${b##refs/heads/}"
+
     # before-branch text
     gitstring="\[$BeforeBackgroundColor\]\[$BeforeForegroundColor\]$BeforeText"
 
     # branch
 
     if (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="\[$BranchBehindAndAheadBackgroundColor\]\[$BranchBehindAndAheadForegroundColor\]$branchstring"
+        gitstring+="\[$BranchBehindAndAheadBackgroundColor\]\[$BranchBehindAndAheadForegroundColor\]$branchstring $BranchBehindAndAheadStatusSymbol"
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
-        gitstring+="\[$BranchBehindBackgroundColor\]\[$BranchBehindForegroundColor\]$branchstring"
+        gitstring+="\[$BranchBehindBackgroundColor\]\[$BranchBehindForegroundColor\]$branchstring $BranchBehindStatusSymbol"
     elif (( $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="\[$BranchAheadBackgroundColor\]\[$BranchAheadForegroundColor\]$branchstring"
+        gitstring+="\[$BranchAheadBackgroundColor\]\[$BranchAheadForegroundColor\]$branchstring $BranchAheadStatusSymbol"
     else
-        gitstring+="\[$BranchBackgroundColor\]\[$BranchForegroundColor\]$branchstring"
+        gitstring+="\[$BranchBackgroundColor\]\[$BranchForegroundColor\]$branchstring $BranchIdenticalStatusToSymbol"
     fi
 
     local indexCount="$(( $indexAdded + $indexModified + $indexDeleted + $indexUnmerged ))"
@@ -475,7 +481,7 @@ __posh_git_ps1_upstream_divergence ()
             svn_upstream=${svn_upstream%@*}
             local n_stop="${#svn_remote[@]}"
             local n
-            for (( n=1; n <= n_stop; n++ )); do
+            for ((n=1; n <= n_stop; n++)); do
                 svn_upstream=${svn_upstream#${svn_remote[$n]}}
             done
 
