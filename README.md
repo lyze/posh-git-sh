@@ -2,7 +2,9 @@ posh-git-bash
 =============
 
 This script allows you to see the status of the current git repository in your
-prompt.
+prompt. It replicates the prompt status from the Windows PowerShell module
+[dahlbyk/posh-git](https://github.com/dahlbyk/posh-git).
+
 
 Installation Instructions
 -------------------------
