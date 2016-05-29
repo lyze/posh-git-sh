@@ -374,10 +374,10 @@ __posh_git_ps1 ()
         gitstring+="\[$BranchBackgroundColor\]\[$BranchForegroundColor\]$branchstring $BranchIdenticalStatusToSymbol"
     fi
 
-    local indexCount="$(( $indexAdded + $indexModified + $indexDeleted + $indexUnmerged ))"
-    local workingCount="$(( $filesAdded + $filesModified + $filesDeleted + $filesUnmerged ))"
     # index status
     if $EnableFileStatus; then
+        local indexCount="$(( $indexAdded + $indexModified + $indexDeleted + $indexUnmerged ))"
+        local workingCount="$(( $filesAdded + $filesModified + $filesDeleted + $filesUnmerged ))"
         if (( $indexCount != 0 )) || $ShowStatusWhenZero; then
             gitstring+="\[$IndexBackgroundColor\]\[$IndexForegroundColor\] +$indexAdded ~$indexModified -$indexDeleted"
         fi
@@ -387,8 +387,6 @@ __posh_git_ps1 ()
         if (( $indexCount != 0 && ($workingCount != 0 || $ShowStatusWhenZero) )); then
             gitstring+="\[$DelimBackgroundColor\]\[$DelimForegroundColor\]$DelimText"
         fi
-    fi
-    if $EnableFileStatus; then
         if (( $workingCount != 0 )) || $ShowStatusWhenZero; then
             gitstring+="\[$WorkingBackgroundColor\]\[$WorkingForegroundColor\] +$filesAdded ~$filesModified -$filesDeleted"
         fi

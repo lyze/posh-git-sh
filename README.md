@@ -92,18 +92,28 @@ Try it out and let me know what you think!
 Configuration Options
 ---------------------
 
-This script should work out of the box. Available options are set through
-your git configuration files. This allows you to control the prompt display on a
-per-repository basis. These files are most likely called `.gitconfig`; an
-example illustrating the syntax of these files can be found at
-http://git-scm.com/docs/git-config#_example.
-```
-bash.describeStyle
-bash.enableFileStatus
-bash.enableGitStatus
-bash.showStatusWhenZero
-bash.showUpstream
-```
+This script should work out of the box. You can set options controlling the
+output of the script by using
+[`git config`](https://www.kernel.org/pub/software/scm/git/docs/git-config.html).
+This allows you to control the prompt display on a per-repository basis.
+
+For example, if computing file changes is taking too long in a large repository,
+you can turn off this behavior (for that repository only):
+
+    cd my-git-repo/
+    git config bash.enableFileStatus false
+
+To restore the default behavior, you can remove the configuration setting to get
+back the default behavior:
+
+    cd my-git-repo/
+    git config --unset bash.enableFileStatus
+
+
+You can also manually edit your git configuration files. These files are most
+likely `~/.gitconfig` or `.git/config`. An example illustrating the syntax of
+these files can be found at http://git-scm.com/docs/git-config#_example.
+
 
 ### bash.describeStyle
 
