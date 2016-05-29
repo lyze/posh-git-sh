@@ -105,8 +105,7 @@ you can turn off this behavior (for that repository only):
     cd my-git-repo/
     git config bash.enableFileStatus false
 
-To restore the default behavior, you can remove the configuration setting to get
-back the default behavior:
+To restore the default behavior, you can remove the configuration setting:
 
     cd my-git-repo/
     git config --unset bash.enableFileStatus
