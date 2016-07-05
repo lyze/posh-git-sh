@@ -195,56 +195,57 @@ __posh_git_echo () {
         *)     ShowStashState=true ;;
     esac
 
-    __POSH_BRANCH_AHEAD_BY=0 # these globals are updated by __posh_git_ps1_upstream_divergence
+    # these globals are updated by __posh_git_ps1_upstream_divergence
+    __POSH_BRANCH_AHEAD_BY=0
     __POSH_BRANCH_BEHIND_BY=0
 
     local is_detached=false
 
-    local g="$(__posh_gitdir)"
+    local g=$(__posh_gitdir)
     if [ -z "$g" ]; then
         return # not a git directory
     fi
-    local rebase=""
-    local b=""
-    local step=""
-    local total=""
+    local rebase=''
+    local b=''
+    local step=''
+    local total=''
     if [ -d "$g/rebase-merge" ]; then
         b=$(cat "$g/rebase-merge/head-name" 2>/dev/null)
         step=$(cat "$g/rebase-merge/msgnum" 2>/dev/null)
         total=$(cat "$g/rebase-merge/end" 2>/dev/null)
         if [ -f "$g/rebase-merge/interactive" ]; then
-            rebase="|REBASE-i"
+            rebase='|REBASE-i'
         else
-            rebase="|REBASE-m"
+            rebase='|REBASE-m'
         fi
     else
         if [ -d "$g/rebase-apply" ]; then
             step=$(cat "$g/rebase-apply/next")
             total=$(cat "$g/rebase-apply/last")
             if [ -f "$g/rebase-apply/rebasing" ]; then
-                rebase="|REBASE"
+                rebase='|REBASE'
             elif [ -f "$g/rebase-apply/applying" ]; then
-                rebase="|AM"
+                rebase='|AM'
             else
-                rebase="|AM/REBASE"
+                rebase='|AM/REBASE'
             fi
         elif [ -f "$g/MERGE_HEAD" ]; then
-            rebase="|MERGING"
+            rebase='|MERGING'
         elif [ -f "$g/CHERRY_PICK_HEAD" ]; then
-            rebase="|CHERRY-PICKING"
+            rebase='|CHERRY-PICKING'
         elif [ -f "$g/REVERT_HEAD" ]; then
-            rebase="|REVERTING"
+            rebase='|REVERTING'
         elif [ -f "$g/BISECT_LOG" ]; then
-            rebase="|BISECTING"
+            rebase='|BISECTING'
         fi
 
-        b="$(git symbolic-ref HEAD 2>/dev/null)" || {
+        b=$(git symbolic-ref HEAD 2>/dev/null) || {
             is_detached=true
-            local output="$(git config -z --get bash.describeStyle)"
+            local output=$(git config -z --get bash.describeStyle)
             if [ -n "$output" ]; then
                 GIT_PS1_DESCRIBESTYLE=$output
             fi
-            b="$(
+            b=$(
             case "${GIT_PS1_DESCRIBESTYLE-}" in
             (contains)
                 git describe --contains HEAD ;;
@@ -254,10 +255,10 @@ __posh_git_echo () {
                 git describe HEAD ;;
             (* | default)
                 git describe --tags --exact-match HEAD ;;
-            esac 2>/dev/null)" ||
+            esac 2>/dev/null) ||
 
-            b="$(cut -c1-7 "$g/HEAD" 2>/dev/null)..." ||
-            b="unknown"
+            b=$(cut -c1-7 "$g/HEAD" 2>/dev/null)... ||
+            b='unknown'
             b="($b)"
         }
     fi
@@ -266,18 +267,18 @@ __posh_git_echo () {
         rebase="$rebase $step/$total"
     fi
 
-    local isDirtyUnstaged=""
-    local isDirtyStaged=""
+    local isDirtyUnstaged=''
+    local isDirtyStaged=''
     local hasStash=false
-    local isBare=""
+    local isBare=''
 
-    if [ "true" = "$(git rev-parse --is-inside-git-dir 2>/dev/null)" ]; then
-        if [ "true" = "$(git rev-parse --is-bare-repository 2>/dev/null)" ]; then
-            isBare="BARE:"
+    if [ 'true' = "$(git rev-parse --is-inside-git-dir 2>/dev/null)" ]; then
+        if [ 'true' = "$(git rev-parse --is-bare-repository 2>/dev/null)" ]; then
+            isBare='BARE:'
         else
-            b="GIT_DIR!"
+            b='GIT_DIR!'
         fi
-    elif [ "true" = "$(git rev-parse --is-inside-work-tree 2>/dev/null)" ]; then
+    elif [ 'true' = "$(git rev-parse --is-inside-work-tree 2>/dev/null)" ]; then
         if $ShowStashState; then
             git rev-parse --verify refs/stash >/dev/null 2>&1 && hasStash=true
         fi
@@ -343,7 +344,6 @@ __posh_git_echo () {
     gitstring="$BeforeBackgroundColor$BeforeForegroundColor$BeforeText"
 
     # branch
-
     if (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
         gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring $BranchBehindAndAheadStatusSymbol"
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
@@ -386,6 +386,7 @@ __posh_git_echo () {
     echo "$gitstring"
 }
 
+# Returns the location of the .git/ directory.
 __posh_gitdir ()
 {
     # Note: this function is duplicated in git-completion.bash
@@ -408,13 +409,13 @@ __posh_gitdir ()
     fi
 }
 
-# Updates the global variables `__POSH_BRANCH_AHEAD_BY` and `__POSH_BRANCH_BEHIND_BY`
+# Updates the global variables `__POSH_BRANCH_AHEAD_BY` and `__POSH_BRANCH_BEHIND_BY`.
 __posh_git_ps1_upstream_divergence ()
 {
     local key value
     local svn_remote svn_url_pattern
     local upstream=git          # default
-    local legacy=""
+    local legacy=''
 
     svn_remote=()
     # get some config options from git-config
@@ -445,7 +446,7 @@ __posh_git_ps1_upstream_divergence ()
 
     # Find our upstream
     case "$upstream" in
-    git)    upstream="@{upstream}" ;;
+    git)    upstream='@{upstream}' ;;
     svn*)
         # get the upstream from the "git-svn-id: ..." in a commit message
         # (git-svn uses essentially the same procedure internally)
@@ -466,8 +467,8 @@ __posh_git_ps1_upstream_divergence ()
             else
                 upstream=${svn_upstream#/}
             fi
-        elif [ "svn+git" = "$upstream" ]; then
-            upstream="@{upstream}"
+        elif [ 'svn+git' = "$upstream" ]; then
+            upstream='@{upstream}'
         fi
         ;;
     esac
