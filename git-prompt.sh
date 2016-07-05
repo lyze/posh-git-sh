@@ -128,7 +128,7 @@
 # svn    | Always compares `HEAD` to `SVN` upstream
 __posh_git_ps1 ()
 {
-    if [ "$(git config --bool bash.enableGitStatus)" == "false" ]; then return; fi
+    if [ "$(git config --bool bash.enableGitStatus)" = "false" ]; then return; fi
 
     local DefaultForegroundColor='\e[m' # Default no color
     local DefaultBackgroundColor=
