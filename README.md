@@ -16,7 +16,7 @@ Installation Instructions
 
         source ~/git-prompt.sh
 
-3.  If you are using bash, you should call `__posh_git_ps1` in your
+3.  If you are using `bash`, you should call `__posh_git_ps1` in your
     `PROMPT_COMMAND` variable. The function `__posh_git_ps1` takes two
     parameters as in `__posh_git_ps1 <string_to_prepend> <string_to_append>`.
     This function updates `PS1` accordingly. For example, the following
@@ -26,6 +26,12 @@ Installation Instructions
     will show username, at-sign, host, colon, cwd, then various status strings,
     followed by dollar and space, as your prompt. This invocation prepends this
     instruction to the existing value of `PROMPT_COMMAND`.
+    
+    If you are using `zsh`, you need to set the
+    [`PROMPT`](http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-PROMPT)
+    variable or the
+    [`precmd`](http://zsh.sourceforge.net/Doc/Release/Functions.html#index-precmd)
+    hook.
 
 
 The Prompt
