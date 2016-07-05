@@ -31,7 +31,8 @@ Installation Instructions
     [`PROMPT`](http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-PROMPT)
     variable or the
     [`precmd`](http://zsh.sourceforge.net/Doc/Release/Functions.html#index-precmd)
-    hook.
+    hook. See also `__posh_git_echo` or
+    [issue #14 for `oh-my-zsh`](https://github.com/lyze/posh-git-sh/issues/14).
 
 
 The Prompt
