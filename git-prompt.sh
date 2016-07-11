@@ -267,8 +267,6 @@ __posh_git_echo () {
         rebase="$rebase $step/$total"
     fi
 
-    local isDirtyUnstaged=''
-    local isDirtyStaged=''
     local hasStash=false
     local isBare=''
 
@@ -374,7 +372,7 @@ __posh_git_echo () {
             gitstring+=" $WorkingBackgroundColor$WorkingForegroundColor!$filesUnmerged"
         fi
     fi
-    gitstring+="$RebaseBackgroundColor$RebaseForegroundColor${rebase:+'\e[0m'$rebase}"
+    gitstring+="${rebase:+$RebaseForegroundColor$RebaseBackgroundColor$rebase}"
 
     # after-branch text
     gitstring+="$AfterBackgroundColor$AfterForegroundColor$AfterText"
