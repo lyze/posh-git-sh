@@ -118,10 +118,10 @@ __posh_color () {
     if [ -n "$ZSH_VERSION" ]; then
         echo %{$1%}
     elif [ -n "$BASH_VERSION" ]; then
-        echo \[$1\]
+        echo \\[$1\\]
     else
         # assume Bash anyway
-        echo \[$1\]
+        echo \\[$1\\]
     fi
 }
 
