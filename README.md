@@ -8,8 +8,8 @@ prompt. It replicates the prompt status from the Windows PowerShell module
 
 Installation Instructions
 -------------------------
-1. [Install bash-completion](https://github.com/bobthecow/git-flow-completion/wiki/Install-Bash-git-completion)
-2. Copy this file to somewhere (e.g. `~/git-prompt.sh`).
+1. _Optional._ [Install bash-completion](https://github.com/bobthecow/git-flow-completion/wiki/Install-Bash-git-completion).
+2. Copy this file to somewhere (e.g., `~/git-prompt.sh`).
 3. Add the following line to your `~/.bashrc`. (You may need to update
    your `~/.bash_profile` to source your `~/.bashrc`, or you can just modify
    `~/.bash_profile` directly.)
