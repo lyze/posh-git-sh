@@ -8,15 +8,15 @@ prompt. It replicates the prompt status from the Windows PowerShell module
 
 Installation Instructions
 -------------------------
-
-1. Copy this file to somewhere (e.g. `~/git-prompt.sh`).
-2. Add the following line to your `~/.bashrc`. (You may need to update
+1. [Install bash-completion](https://github.com/bobthecow/git-flow-completion/wiki/Install-Bash-git-completion)
+2. Copy this file to somewhere (e.g. `~/git-prompt.sh`).
+3. Add the following line to your `~/.bashrc`. (You may need to update
    your `~/.bash_profile` to source your `~/.bashrc`, or you can just modify
    `~/.bash_profile` directly.)
 
         source ~/git-prompt.sh
 
-3.  If you are using `bash`, you should call `__posh_git_ps1` in your
+4.  If you are using `bash`, you should call `__posh_git_ps1` in your
     `PROMPT_COMMAND` variable. The function `__posh_git_ps1` takes two
     parameters as in `__posh_git_ps1 <string_to_prepend> <string_to_append>`.
     This function updates `PS1` accordingly. For example, the following
