@@ -205,15 +205,15 @@ __posh_git_echo () {
         *)     EnableStatusSymbol=true ;;
     esac
 
-    local branchIdenticalStatusSymbol=''
-    local branchAheadStatusSymbol=''
-    local branchBehindStatusSymbol=''
-    local branchBehindAndAheadStatusSymbol=''
+    local BranchIdenticalStatusSymbol=''
+    local BranchAheadStatusSymbol=''
+    local BranchBehindStatusSymbol=''
+    local BranchBehindAndAheadStatusSymbol=''
     if $EnableStatusSymbol; then
-      branchIdenticalStatusSymbol=$' \xE2\x89\xA1' # Three horizontal lines
-      branchAheadStatusSymbol=$' \xE2\x86\x91' # Up Arrow
-      branchBehindStatusSymbol=$' \xE2\x86\x93' # Down Arrow
-      branchBehindAndAheadStatusSymbol=$' \xE2\x86\x95' # Up and Down Arrow
+      BranchIdenticalStatusSymbol=$' \xE2\x89\xA1' # Three horizontal lines
+      BranchAheadStatusSymbol=$' \xE2\x86\x91' # Up Arrow
+      BranchBehindStatusSymbol=$' \xE2\x86\x93' # Down Arrow
+      BranchBehindAndAheadStatusSymbol=$' \xE2\x86\x95' # Up and Down Arrow
     fi
 
     # these globals are updated by __posh_git_ps1_upstream_divergence
@@ -364,13 +364,13 @@ __posh_git_echo () {
 
     # branch
     if (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring$branchBehindAndAheadStatusSymbol"
+        gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring$BranchBehindAndAheadStatusSymbol"
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
-        gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring$branchBehindStatusSymbol"
+        gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring$BranchBehindStatusSymbol"
     elif (( $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring$branchAheadStatusSymbol"
+        gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring$BranchAheadStatusSymbol"
     else
-        gitstring+="$BranchBackgroundColor$BranchForegroundColor$branchstring$branchIdenticalStatusSymbol"
+        gitstring+="$BranchBackgroundColor$BranchForegroundColor$branchstring$BranchIdenticalStatusSymbol"
     fi
 
     # index status
