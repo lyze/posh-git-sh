@@ -26,7 +26,7 @@ Installation Instructions
     will show username, at-sign, host, colon, cwd, then various status strings,
     followed by dollar and space, as your prompt. This invocation prepends this
     instruction to the existing value of `PROMPT_COMMAND`.
-    
+
     If you are using `zsh`, you need to set the
     [`PROMPT`](http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-PROMPT)
     variable or the
@@ -175,6 +175,13 @@ Option | Description
 legacy | Does not use the `--count` option available in recent versions of `git-rev-list`
 git    | _Default_. Always compares `HEAD` to `@{upstream}`
 svn    | Always compares `HEAD` to `SVN` upstream
+
+### bash.enableStatusSymbol
+
+Option | Description
+------ | -----------
+true   | _Default_. Status symbols (`≡` `↑` `↓` `↕`) will be shown.
+false  | No status symbol will be shown, saving some prompt length.
 
 
 Background
