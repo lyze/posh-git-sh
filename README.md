@@ -184,6 +184,16 @@ true   | _Default_. Status symbols (`≡` `↑` `↓` `↕`) will be shown.
 false  | No status symbol will be shown, saving some prompt length.
 
 
+Known issues
+------------
+
+### Terminal.app
+
+When using Terminal.app, when the prompt is longer than the terminal window
+width, the prompt line may not wrap correctly to the next line. This is
+suspected to be caused by incorrect handling of ANSI color codes by
+Terminal.app. See [issue #18](https://www.github.com/lyze/posh-git-sh/issues/18).
+
 Background
 ----------
 
