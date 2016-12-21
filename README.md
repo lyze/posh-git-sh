@@ -8,20 +8,24 @@ prompt. It replicates the prompt status from the Windows PowerShell module
 
 Installation Instructions
 -------------------------
-1. _Optional._ [Install bash-completion](https://github.com/bobthecow/git-flow-completion/wiki/Install-Bash-git-completion).
-2. Copy this file to somewhere (e.g., `~/git-prompt.sh`).
-3. Add the following line to your `~/.bashrc`. (You may need to update
-   your `~/.bash_profile` to source your `~/.bashrc`, or you can just modify
+1.  _Optional._ [Install bash-completion](https://github.com/bobthecow/git-flow-completion/wiki/Install-Bash-git-completion).
+2.  Copy this file to somewhere (e.g., `~/git-prompt.sh`).
+3.  Add the following line to your `~/.bashrc`. (You may need to update
+    your `~/.bash_profile` to source your `~/.bashrc`, or you can just modify
    `~/.bash_profile` directly.)
 
-        source ~/git-prompt.sh
+    ```sh
+    source ~/git-prompt.sh
+    ```
 
 4.  If you are using `bash`, you should call `__posh_git_ps1` in your
     `PROMPT_COMMAND` variable. The function `__posh_git_ps1` takes two
     parameters as in `__posh_git_ps1 <string_to_prepend> <string_to_append>`.
     This function updates `PS1` accordingly. For example, the following
 
-        PROMPT_COMMAND='__posh_git_ps1 "\u@\h:\w" "\\\$ ";'$PROMPT_COMMAND
+    ```sh
+    PROMPT_COMMAND='__posh_git_ps1 "\u@\h:\w" "\\\$ ";'$PROMPT_COMMAND
+    ```
 
     will show username, at-sign, host, colon, cwd, then various status strings,
     followed by dollar and space, as your prompt. This invocation prepends this
@@ -40,7 +44,9 @@ The Prompt
 
 By default, the status summary has the following format:
 
-    [{HEAD-name} x +A ~B -C !D | +E ~F -G !H]
+```sh
+[{HEAD-name} x +A ~B -C !D | +E ~F -G !H]
+```
 
 * `{HEAD-name}` is the current branch, or the SHA of a detached HEAD. The color
   of `{HEAD-name}` represents the divergence from upstream. `{HEAD-name}` also
@@ -93,7 +99,9 @@ following `git status`:
 
 To get the above prompt display, I have the following in my `.bashrc`:
 
-        export PROMPT_COMMAND='__posh_git_ps1 "\\[\[\e[0;32m\]\u@\h \[\e[0;33m\]\w" " \[\e[1;34m\]\n\$\[\e[0m\] ";'$PROMPT_COMMAND
+```sh
+export PROMPT_COMMAND='__posh_git_ps1 "\\[\[\e[0;32m\]\u@\h \[\e[0;33m\]\w" " \[\e[1;34m\]\n\$\[\e[0m\] ";'$PROMPT_COMMAND
+```
 
 Try it out and let me know what you think!
 
@@ -109,14 +117,17 @@ This allows you to control the prompt display on a per-repository basis.
 For example, if computing file changes is taking too long in a large repository,
 you can turn off this behavior (for that repository only):
 
-    cd my-git-repo/
-    git config bash.enableFileStatus false
+```sh
+cd my-git-repo/
+git config bash.enableFileStatus false
+```
 
 To restore the default behavior, you can remove the configuration setting:
 
-    cd my-git-repo/
-    git config --unset bash.enableFileStatus
-
+```sh
+cd my-git-repo/
+git config --unset bash.enableFileStatus
+```
 
 You can also manually edit your git configuration files. These files are most
 likely `~/.gitconfig` or `.git/config`. An example illustrating the syntax of
@@ -193,6 +204,7 @@ When using Terminal.app, when the prompt is longer than the terminal window
 width, the prompt line may not wrap correctly to the next line. This is
 suspected to be caused by incorrect handling of ANSI color codes by
 Terminal.app. See [issue #18](https://www.github.com/lyze/posh-git-sh/issues/18).
+
 
 Background
 ----------
