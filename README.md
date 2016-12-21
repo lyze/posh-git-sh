@@ -183,11 +183,13 @@ Option | Description
 true   | _Default_. Status symbols (`≡` `↑` `↓` `↕`) will be shown.
 false  | No status symbol will be shown, saving some prompt length.
 
-Issue with Apple's Terminal.app
---------------------------------
 
-In [issue #18](https://github.com/lyze/posh-git-sh/issues/18), it was reported that when the prompt is longer than the terminal window width, the prompt line may not wrap correctly to the next line if the line break is inserted in or near a colour change in the prompt. The problem is a bug in Terminal.app, not in posh-git-sh, see also [the discussion on the Apple forums](https://discussions.apple.com/thread/7786301). The easiest solution is to make sure your prompt doesn't become longer than the window width. Another solution is to use a different terminal emulator, as others have been reported to not suffer from this bug.
+Known issues
+------------
 
+### Terminal.app
+
+When using Terminal.app, when the prompt is longer than the terminal window width, the prompt line may not wrap correctly to the next line. This is suspected to be caused by incorrect handling of ANSI color codes by Terminal.app. See issue #18.
 
 Background
 ----------
