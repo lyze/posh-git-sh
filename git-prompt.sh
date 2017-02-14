@@ -120,6 +120,10 @@ __posh_git_ps1 ()
             ;;
     esac
     local gitstring=$(__posh_git_echo)
+	#same as: removing everything after   $BeforeBackgroundColor$BeforeForegroundColor$BeforeText 
+	ps1pc_prefix="${ps1pc_prefix%%'\[\e[1;33m\] ['*}"
+	#same as: removing everything before  $AfterBackgroundColor$AfterForegroundColor$AfterText 
+	ps1pc_suffix="${ps1pc_suffix##*'\[\e[1;33m\]]'*}"
     PS1=$ps1pc_prefix$gitstring$ps1pc_suffix
 }
 
