@@ -38,6 +38,12 @@ Installation Instructions
     hook. See also `__posh_git_echo` or
     [issue #14 for `oh-my-zsh`](https://github.com/lyze/posh-git-sh/issues/14).
 
+    If you are using conda, and want to keep the environment name information prepended to the system promt use the following in your .bashrc fiel
+
+    ```sh
+    PROMPT_COMMAND='__posh_git_ps1 "$PS1" "";'$PROMPT_COMMAND
+    ```
+
 
 The Prompt
 ----------
