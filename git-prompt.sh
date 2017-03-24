@@ -120,7 +120,7 @@ __posh_git_ps1 ()
             ;;
     esac
     local gitstring=$(__posh_git_echo)
-    PS1=$ps1pc_prefix$gitstring$ps1pc_suffix
+    PS1=$(__virtualenv)$ps1pc_prefix$gitstring$ps1pc_suffix
 }
 
 __posh_color () {
@@ -508,4 +508,26 @@ __posh_git_ps1_upstream_divergence ()
     fi
     : ${__POSH_BRANCH_AHEAD_BY:=0}
     : ${__POSH_BRANCH_BEHIND_BY:=0}
+}
+
+# Determine the active Python virtualenv and return partial prompt.
+function __virtualenv () {
+    local BranchAheadForegroundColor='\e[1;32m' # Green
+    local BranchForegroundColor='\e[1;36m' # Cyan
+    
+    # get the name of the active pyton environment
+    if test -n "$VIRTUAL_ENV" ; then
+        venvname="`basename $VIRTUAL_ENV`"
+    elif test -n "$CONDA_DEFAULT_ENV" ; then
+        venvname="$CONDA_DEFAULT_ENV"
+    else
+        venvname=""
+    fi
+    
+    # return prompt for python virtualenv
+    if test -z "$venvname" ; then
+        echo "";
+    else
+        echo "$BranchAheadForegroundColor[$BranchForegroundColor$venvname$BranchAheadForegroundColor] "
+    fi
 }
