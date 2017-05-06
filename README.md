@@ -24,7 +24,7 @@ Installation Instructions
     This function updates `PS1` accordingly. For example, the following
 
     ```sh
-    PROMPT_COMMAND='__posh_git_ps1 "\u@\h:\w" "\\\$ ";'$PROMPT_COMMAND
+    PROMPT_COMMAND='__posh_git_ps1 "\u@\h:\w " "\\\$ ";'$PROMPT_COMMAND
     ```
 
     will show username, at-sign, host, colon, cwd, then various status strings,
