@@ -20,23 +20,34 @@ Installation Instructions
 
 4.  If you are using `bash`, you should call `__posh_git_ps1` in your
     `PROMPT_COMMAND` variable. The function `__posh_git_ps1` takes two
-    parameters as in `__posh_git_ps1 <string_to_prepend> <string_to_append>`.
-    This function updates `PS1` accordingly. For example, the following
+    parameters (`__posh_git_ps1 <prefix> <suffix>`), and sets `PS1` to 
+    `<prefix><status><suffix>`. You can also use `__posh_git_echo` to echo only
+    the status.
+    
+    *   Bash example:
 
-    ```sh
+    ```bash
     PROMPT_COMMAND='__posh_git_ps1 "\u@\h:\w " "\\\$ ";'$PROMPT_COMMAND
     ```
 
-    will show username, at-sign, host, colon, cwd, then various status strings,
+    This shows username, at-sign, host, colon, cwd, then various status strings,
     followed by dollar and space, as your prompt. This invocation prepends this
     instruction to the existing value of `PROMPT_COMMAND`.
 
-    If you are using `zsh`, you need to set the
+    *   For zsh, you need to set the
     [`PROMPT`](http://zsh.sourceforge.net/Doc/Release/Parameters.html#index-PROMPT)
     variable or the
     [`precmd`](http://zsh.sourceforge.net/Doc/Release/Functions.html#index-precmd)
-    hook. See also `__posh_git_echo` or
-    [issue #14 for `oh-my-zsh`](https://github.com/lyze/posh-git-sh/issues/14).
+    hook.
+    
+    ```zsh
+    precmd() {
+      __posh_git_ps1 '\u@\h:\w ' '$ '
+    }
+    ```
+
+    For some additional hints for integrating with `oh-my-zsh`, take a look at
+    [issue #14](https://github.com/lyze/posh-git-sh/issues/14).
 
 
 The Prompt
