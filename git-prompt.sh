@@ -209,11 +209,13 @@ __posh_git_echo () {
     local BranchAheadStatusSymbol=''
     local BranchBehindStatusSymbol=''
     local BranchBehindAndAheadStatusSymbol=''
+    local BranchWarningStatusSymbol=''
     if $EnableStatusSymbol; then
       BranchIdenticalStatusSymbol=$' \xE2\x89\xA1' # Three horizontal lines
       BranchAheadStatusSymbol=$' \xE2\x86\x91' # Up Arrow
       BranchBehindStatusSymbol=$' \xE2\x86\x93' # Down Arrow
       BranchBehindAndAheadStatusSymbol=$' \xE2\x86\x95' # Up and Down Arrow
+      BranchWarningStatusSymbol=' ?'
     fi
 
     # these globals are updated by __posh_git_ps1_upstream_divergence
@@ -302,6 +304,7 @@ __posh_git_echo () {
             git rev-parse --verify refs/stash >/dev/null 2>&1 && hasStash=true
         fi
         __posh_git_ps1_upstream_divergence
+        local divergence_return_code=$?
     fi
 
     # show index status and working directory status
@@ -369,7 +372,11 @@ __posh_git_echo () {
         gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring$BranchBehindStatusSymbol"
     elif (( $__POSH_BRANCH_AHEAD_BY > 0 )); then
         gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring$BranchAheadStatusSymbol"
+    elif (( $divergence_return_code )); then
+        # ahead and behind are both 0, but there was some problem while executing the command.
+        gitstring+="$BranchBackgroundColor$BranchForegroundColor$branchstring$BranchWarningStatusSymbol"
     else
+        # ahead and behind are both 0, and the divergence was determined successfully
         gitstring+="$BranchBackgroundColor$BranchForegroundColor$branchstring$BranchIdenticalStatusSymbol"
     fi
 
@@ -492,20 +499,28 @@ __posh_git_ps1_upstream_divergence ()
         ;;
     esac
 
+    local return_code=
     __POSH_BRANCH_AHEAD_BY=0
     __POSH_BRANCH_BEHIND_BY=0
     # Find how many commits we are ahead/behind our upstream
     if [ -z "$legacy" ]; then
-        IFS=$' \t\n' read -r __POSH_BRANCH_BEHIND_BY __POSH_BRANCH_AHEAD_BY <<< "`git rev-list --count --left-right $upstream...HEAD 2>/dev/null`"
+        local output
+        output=$(git rev-list --count --left-right $upstream...HEAD 2>/dev/null)
+        return_code=$?
+        IFS=$' \t\n' read -r __POSH_BRANCH_BEHIND_BY __POSH_BRANCH_AHEAD_BY <<< $output
     else
+        local output
+        output=$(git rev-list --left-right $upstream...HEAD 2>/dev/null)
+        return_code=$?
         # produce equivalent output to --count for older versions of git
         while IFS=$' \t\n' read -r commit; do
             case "$commit" in
             "<*") (( __POSH_BRANCH_BEHIND_BY++ )) ;;
             ">*") (( __POSH_BRANCH_AHEAD_BY++ ))  ;;
             esac
-        done <<< "`git rev-list --left-right $upstream...HEAD 2>/dev/null`"
+        done <<< $output
     fi
     : ${__POSH_BRANCH_AHEAD_BY:=0}
     : ${__POSH_BRANCH_BEHIND_BY:=0}
+    return $return_code
 }
