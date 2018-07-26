@@ -504,7 +504,7 @@ __posh_git_ps1_upstream_divergence ()
     __POSH_BRANCH_BEHIND_BY=0
     # Find how many commits we are ahead/behind our upstream
     if [ -z "$legacy" ]; then
-        local output
+        local output=
         output=$(git rev-list --count --left-right $upstream...HEAD 2>/dev/null)
         return_code=$?
         IFS=$' \t\n' read -r __POSH_BRANCH_BEHIND_BY __POSH_BRANCH_AHEAD_BY <<< $output
