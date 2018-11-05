@@ -144,6 +144,7 @@ __posh_git_ps1 ()
 
     if [[ "$VIRTUAL_ENV" ]]; then
             PS1="(`basename \"$VIRTUAL_ENV\"`) $ps1pc_prefix$gitstring$ps1pc_suffix"
+            _OLD_VIRTUAL_PS1=$ps1pc_prefix$gitstring$ps1pc_suffix
     else
             PS1="$ps1pc_prefix$gitstring$ps1pc_suffix"
     fi
