@@ -122,12 +122,6 @@ __posh_git_ps1 ()
     fi
     dir='../'$dir
   done
-
-    if $exit; then
-        export PS1='${debian_chroot:+($debian_chroot)}\[\033[01;32m\]\u@\h\[\033[00m\]:\[\033[01;34m\]\w\[\033[00m\]\$ '
-      return
-    fi
-
     # Control will enter here if $DIRECTORY exists.
     local ps1pc_prefix=
     local ps1pc_suffix=
@@ -141,10 +135,15 @@ __posh_git_ps1 ()
             return
             ;;
     esac
-    ps1pc_prefix="\[\e[1;32m\]\u@\h:\[\e[1;34m\]\w\[\e[1;00m\] "
-    local gitstring=$(__posh_git_echo)
+
+    if $exit; then
+        local gitstring="";
+    else
+        local gitstring=$(__posh_git_echo)
+    fi
+
     if [[ "$VIRTUAL_ENV" ]]; then
-            PS1="(`basename \"$VIRTUAL_ENV\"`)$ps1pc_prefix$gitstring$ps1pc_suffix"
+            PS1="(`basename \"$VIRTUAL_ENV\"`) $ps1pc_prefix$gitstring$ps1pc_suffix"
     else
             PS1="$ps1pc_prefix$gitstring$ps1pc_suffix"
     fi
