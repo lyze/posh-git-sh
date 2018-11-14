@@ -67,6 +67,14 @@
 # true   | _Default_. An indicator will display if the stash is not empty.
 # false  | An indicator will not display the stash status.
 #
+# bash.showStashCount
+# -------------------
+#
+# Option | Description
+# ------ | -----------
+# true   | _Default_. The count of refs in stash will also be shown if `bash.showStashState` is true.
+# false  | The count of refs in stash will not be shown.
+#
 # bash.showStatusWhenZero
 # -----------------------
 #
@@ -198,6 +206,12 @@ __posh_git_echo () {
         false) ShowStashState=false ;;
         *)     ShowStashState=true ;;
     esac
+    local ShowStashCount=`git config --bool bash.showStashCount`
+    case "$ShowStashCount" in
+        true)   ShowStashCount=true ;;
+        false)  ShowStashCount=false ;;
+        *)      ShowStashCount=true ;;
+    esac
     local EnableStatusSymbol=`git config --bool bash.enableStatusSymbol`
     case "$EnableStatusSymbol" in
         true)  EnableStatusSymbol=true ;;
@@ -291,6 +305,7 @@ __posh_git_echo () {
     fi
 
     local hasStash=false
+    local stashCount=0
     local isBare=''
 
     if [ 'true' = "$(git rev-parse --is-inside-git-dir 2>/dev/null)" ]; then
@@ -302,6 +317,9 @@ __posh_git_echo () {
     elif [ 'true' = "$(git rev-parse --is-inside-work-tree 2>/dev/null)" ]; then
         if $ShowStashState; then
             git rev-parse --verify refs/stash >/dev/null 2>&1 && hasStash=true
+            if $ShowStashCount && $hasStash; then
+                $stashCount=$(git stash list | wc -l)
+            fi
         fi
         __posh_git_ps1_upstream_divergence
         local divergence_return_code=$?
@@ -407,6 +425,9 @@ __posh_git_echo () {
 
     if $ShowStashState && $hasStash; then
         gitstring+="$StashBackgroundColor$StashForegroundColor"$StashText
+        if $ShowStashCount; then
+            gitstring+=$stashCount
+        fi
     fi
     gitstring+="$DefaultBackgroundColor$DefaultForegroundColor"
     echo "$gitstring"
