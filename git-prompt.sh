@@ -183,7 +183,7 @@ __posh_git_echo () {
 
     local StashForegroundColor=$(__posh_color '\e[0;34m') # Darker blue
     local StashBackgroundColor=
-    local StashText='$'
+    local StashText=\\'$'
 
     local RebaseForegroundColor=$(__posh_color '\e[0m') # reset
     local RebaseBackgroundColor=
