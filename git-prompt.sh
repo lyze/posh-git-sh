@@ -183,7 +183,7 @@ __posh_git_echo () {
 
     local StashForegroundColor=$(__posh_color '\e[0;34m') # Darker blue
     local StashBackgroundColor=
-    local StashText='$'
+    local StashText=\\'$'
 
     local RebaseForegroundColor=$(__posh_color '\e[0m') # reset
     local RebaseBackgroundColor=
@@ -318,7 +318,7 @@ __posh_git_echo () {
         if $ShowStashState; then
             git rev-parse --verify refs/stash >/dev/null 2>&1 && hasStash=true
             if $ShowStashCount && $hasStash; then
-                $stashCount=$(git stash list | wc -l)
+                stashCount=$(git stash list | wc -l | tr -d '[:space:]')
             fi
         fi
         __posh_git_ps1_upstream_divergence
