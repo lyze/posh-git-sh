@@ -420,15 +420,16 @@ __posh_git_echo () {
     fi
     gitstring+="${rebase:+$RebaseForegroundColor$RebaseBackgroundColor$rebase}"
 
-    # after-branch text
-    gitstring+="$AfterBackgroundColor$AfterForegroundColor$AfterText"
-
     if $ShowStashState && $hasStash; then
-        gitstring+="$StashBackgroundColor$StashForegroundColor"$StashText
+        gitstring+="$DelimBackgroundColor$DelimForegroundColor$DelimText$StashBackgroundColor$StashForegroundColor"$StashText
         if $ShowStashCount; then
             gitstring+=$stashCount
         fi
     fi
+
+    # after-branch text
+    gitstring+="$AfterBackgroundColor$AfterForegroundColor$AfterText"
+
     gitstring+="$DefaultBackgroundColor$DefaultForegroundColor"
     echo "$gitstring"
 }
