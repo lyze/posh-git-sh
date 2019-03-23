@@ -228,7 +228,7 @@ __posh_git_echo () {
       BranchIdenticalStatusSymbol=$' \xE2\x89\xA1' # Three horizontal lines
       BranchAheadStatusSymbol=$' \xE2\x86\x91' # Up Arrow
       BranchBehindStatusSymbol=$' \xE2\x86\x93' # Down Arrow
-      BranchBehindAndAheadStatusSymbol=$' \xE2\x86\x95' # Up and Down Arrow
+      BranchBehindAndAheadStatusSymbol=$'\xE2\x86\x95' # Up and Down Arrow
       BranchWarningStatusSymbol=' ?'
     fi
 
@@ -385,11 +385,11 @@ __posh_git_echo () {
 
     # branch
     if (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring$BranchBehindAndAheadStatusSymbol"
+        gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring $__POSH_BRANCH_BEHIND_BY$BranchBehindAndAheadStatusSymbol$__POSH_BRANCH_AHEAD_BY"
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
-        gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring$BranchBehindStatusSymbol"
+        gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring$BranchBehindStatusSymbol$__POSH_BRANCH_BEHIND_BY"
     elif (( $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring$BranchAheadStatusSymbol"
+        gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring$BranchAheadStatusSymbol$__POSH_BRANCH_AHEAD_BY"
     elif (( $divergence_return_code )); then
         # ahead and behind are both 0, but there was some problem while executing the command.
         gitstring+="$BranchBackgroundColor$BranchForegroundColor$branchstring$BranchWarningStatusSymbol"
