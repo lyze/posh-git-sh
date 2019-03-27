@@ -19,13 +19,6 @@
 # This script should work out of the box. Available options are set through
 # your git configuration files. This allows you to control the prompt display on a
 # per-repository basis.
-# ```
-# bash.describeStyle
-# bash.enableFileStatus
-# bash.enableGitStatus
-# bash.showStatusWhenZero
-# bash.showUpstream
-# ```
 #
 # bash.describeStyle
 # ------------------
@@ -59,21 +52,13 @@
 # true   | _Default_. Color coding and indicators will be shown.
 # false  | The script will not run.
 #
-# bash.showStashState
+# bash.enableStashStatus
 # -------------------
 #
 # Option | Description
 # ------ | -----------
 # true   | _Default_. An indicator will display if the stash is not empty.
 # false  | An indicator will not display the stash status.
-#
-# bash.showStashCount
-# -------------------
-#
-# Option | Description
-# ------ | -----------
-# true   | _Default_. The count of refs in stash will also be shown if `bash.showStashState` is true.
-# false  | The count of refs in stash will not be shown.
 #
 # bash.showStatusWhenZero
 # -----------------------
@@ -183,7 +168,8 @@ __posh_git_echo () {
 
     local StashForegroundColor=$(__posh_color '\e[0;34m') # Darker blue
     local StashBackgroundColor=
-    local StashText=\\'$'
+    local BeforeStash='('
+    local AfterStash=')'
 
     local RebaseForegroundColor=$(__posh_color '\e[0m') # reset
     local RebaseBackgroundColor=
@@ -200,17 +186,11 @@ __posh_git_echo () {
         false) ShowStatusWhenZero=false ;;
         *)     ShowStatusWhenZero=false ;;
     esac
-    local ShowStashState=`git config --bool bash.showStashState`
-    case "$ShowStashState" in
-        true)  ShowStashState=true ;;
-        false) ShowStashState=false ;;
-        *)     ShowStashState=true ;;
-    esac
-    local ShowStashCount=`git config --bool bash.showStashCount`
-    case "$ShowStashCount" in
-        true)   ShowStashCount=true ;;
-        false)  ShowStashCount=false ;;
-        *)      ShowStashCount=true ;;
+    local EnableStashStatus=`git config --bool bash.enableStashStatus`
+    case "$EnableStashStatus" in
+        true)  EnableStashStatus=true ;;
+        false) EnableStashStatus=false ;;
+        *)     EnableStashStatus=true ;;
     esac
     local EnableStatusSymbol=`git config --bool bash.enableStatusSymbol`
     case "$EnableStatusSymbol" in
@@ -315,9 +295,9 @@ __posh_git_echo () {
             b='GIT_DIR!'
         fi
     elif [ 'true' = "$(git rev-parse --is-inside-work-tree 2>/dev/null)" ]; then
-        if $ShowStashState; then
+        if $EnableStashStatus; then
             git rev-parse --verify refs/stash >/dev/null 2>&1 && hasStash=true
-            if $ShowStashCount && $hasStash; then
+            if $hasStash; then
                 stashCount=$(git stash list | wc -l | tr -d '[:space:]')
             fi
         fi
@@ -420,16 +400,12 @@ __posh_git_echo () {
     fi
     gitstring+="${rebase:+$RebaseForegroundColor$RebaseBackgroundColor$rebase}"
 
-    # after-branch text
-    gitstring+="$AfterBackgroundColor$AfterForegroundColor$AfterText"
-
-    if $ShowStashState && $hasStash; then
-        gitstring+="$StashBackgroundColor$StashForegroundColor"$StashText
-        if $ShowStashCount; then
-            gitstring+=$stashCount
-        fi
+    if $EnableStashStatus && $hasStash; then
+        gitstring+="$DefaultBackgroundColor$DefaultForegroundColor $StashBackgroundColor$StashForegroundColor$BeforeStash$stashCount$AfterStash"
     fi
-    gitstring+="$DefaultBackgroundColor$DefaultForegroundColor"
+
+    # after-branch text
+    gitstring+="$AfterBackgroundColor$AfterForegroundColor$AfterText$DefaultBackgroundColor$DefaultForegroundColor"
     echo "$gitstring"
 }
 
