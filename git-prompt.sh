@@ -20,6 +20,21 @@
 # your git configuration files. This allows you to control the prompt display on a
 # per-repository basis.
 #
+# bash.branchBehindAndAheadDisplay
+# ------------------
+#
+# This option controls whether and how to display the number of commits by which
+# the current branch is behind or ahead of its remote.
+#
+# Option   | Description
+# -------- | -----------
+# full     | _Default_. Display count alongside the appropriate up/down arrow.
+#          | If both behind and ahead, use two separate arrows.
+# compact  | Display count alongside the appropriate up/down arrow. If both
+#          | behind and ahead, display the behind count, then a double arrow,
+#          | then the ahead count.
+# minimal  | Display the up/down or double arrow as appropriate, with no counts.
+#
 # bash.describeStyle
 # ------------------
 #
@@ -174,6 +189,11 @@ __posh_git_echo () {
     local RebaseForegroundColor=$(__posh_color '\e[0m') # reset
     local RebaseBackgroundColor=
 
+    local BranchBehindAndAheadDisplay=`git config --get bash.branchBehindAndAheadDisplay`
+    if [ -z "$BranchBehindAndAheadDisplay" ]; then
+        BranchBehindAndAheadDisplay="full"
+    fi
+
     local EnableFileStatus=`git config --bool bash.enableFileStatus`
     case "$EnableFileStatus" in
         true)  EnableFileStatus=true ;;
@@ -208,7 +228,7 @@ __posh_git_echo () {
       BranchIdenticalStatusSymbol=$' \xE2\x89\xA1' # Three horizontal lines
       BranchAheadStatusSymbol=$' \xE2\x86\x91' # Up Arrow
       BranchBehindStatusSymbol=$' \xE2\x86\x93' # Down Arrow
-      BranchBehindAndAheadStatusSymbol=$' \xE2\x86\x95' # Up and Down Arrow
+      BranchBehindAndAheadStatusSymbol=$'\xE2\x86\x95' # Up and Down Arrow
       BranchWarningStatusSymbol=' ?'
     fi
 
@@ -365,11 +385,28 @@ __posh_git_echo () {
 
     # branch
     if (( $__POSH_BRANCH_BEHIND_BY > 0 && $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring$BranchBehindAndAheadStatusSymbol"
+        gitstring+="$BranchBehindAndAheadBackgroundColor$BranchBehindAndAheadForegroundColor$branchstring"
+        if [ "$BranchBehindAndAheadDisplay" = "full" ]; then
+            gitstring+="$BranchBehindStatusSymbol$__POSH_BRANCH_BEHIND_BY$BranchAheadStatusSymbol$__POSH_BRANCH_AHEAD_BY"
+        elif [ "$BranchBehindAndAheadDisplay" = "compact" ]; then
+            gitstring+=" $__POSH_BRANCH_BEHIND_BY$BranchBehindAndAheadStatusSymbol$__POSH_BRANCH_AHEAD_BY"
+        else
+            gitstring+=" $BranchBehindAndAheadStatusSymbol"
+        fi
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
-        gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring$BranchBehindStatusSymbol"
+        gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring"
+        if [ "$BranchBehindAndAheadDisplay" = "full" -o "$BranchBehindAndAheadDisplay" = "compact" ]; then
+            gitstring+="$BranchBehindStatusSymbol$__POSH_BRANCH_BEHIND_BY"
+        else
+            gitstring+="$BranchBehindStatusSymbol"
+        fi
     elif (( $__POSH_BRANCH_AHEAD_BY > 0 )); then
-        gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring$BranchAheadStatusSymbol"
+        gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring"
+        if [ "$BranchBehindAndAheadDisplay" = "full" -o "$BranchBehindAndAheadDisplay" = "compact" ]; then
+            gitstring+="$BranchAheadStatusSymbol$__POSH_BRANCH_AHEAD_BY"
+        else
+            gitstring+="$BranchAheadStatusSymbol"
+        fi
     elif (( $divergence_return_code )); then
         # ahead and behind are both 0, but there was some problem while executing the command.
         gitstring+="$BranchBackgroundColor$BranchForegroundColor$branchstring$BranchWarningStatusSymbol"
