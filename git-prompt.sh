@@ -20,92 +20,70 @@
 # your git configuration files. This allows you to control the prompt display on a
 # per-repository basis.
 #
-# bash.branchBehindAndAheadDisplay
-# ------------------
+### bash.branchBehindAndAheadDisplay
 #
 # This option controls whether and how to display the number of commits by which
 # the current branch is behind or ahead of its remote.
 #
-# Option   | Description
-# -------- | -----------
-# full     | _Default_. Display count alongside the appropriate up/down arrow.
-#          | If both behind and ahead, use two separate arrows.
-# compact  | Display count alongside the appropriate up/down arrow. If both
-#          | behind and ahead, display the behind count, then a double arrow,
-#          | then the ahead count.
-# minimal  | Display the up/down or double arrow as appropriate, with no counts.
+# *   `full`: _Default_. Display count alongside the appropriate up/down arrow. If
+#     both behind and ahead, use two separate arrows.
+# *   `compact`: Display count alongside the appropriate up/down arrow. If both
+#     behind and ahead, display the behind count, then a double arrow, then the
+#     ahead count.
+# *   `minimal`: Display the up/down or double arrow as appropriate, with no
+#     counts.
 #
-# bash.describeStyle
-# ------------------
+# ### bash.describeStyle
 #
 # This option controls if you would like to see more information about the
 # identity of commits checked out as a detached `HEAD`. This is also controlled
 # by the legacy environment variable `GIT_PS1_DESCRIBESTYLE`.
 #
-# Option   | Description
-# -------- | -----------
-# contains | relative to newer annotated tag `(v1.6.3.2~35)`
-# branch   | relative to newer tag or branch `(master~4)`
-# describe | relative to older annotated tag `(v1.6.3.1-13-gdd42c2f)`
-# default  | exactly matching tag
 #
-# bash.enableFileStatus
-# ---------------------
+# *  `contains`: relative to newer annotated tag `(v1.6.3.2~35)`
+# *  `branch`: relative to newer tag or branch `(master~4)`
+# *  `describe`: relative to older annotated tag `(v1.6.3.1-13-gdd42c2f)`
+# *  `default`: exactly matching tag
 #
-# Option | Description
-# ------ | -----------
-# true   | _Default_. The script will query for all file indicators every time.
-# false  | No file indicators will be displayed. The script will not query
-#          upstream for differences. Branch color-coding information is still
-#          displayed.
+# ### bash.enableFileStatus
 #
-# bash.enableGitStatus
-# --------------------
+# *  `true`: _Default_. The script will query for all file indicators every time.
+# *  `false`: No file indicators will be displayed. The script will not query
+#     upstream for differences. Branch color-coding information is still
+#     displayed.
 #
-# Option | Description
-# ------ | -----------
-# true   | _Default_. Color coding and indicators will be shown.
-# false  | The script will not run.
+# ### bash.enableGitStatus
 #
-# bash.enableStashStatus
-# -------------------
+# *  `true`: _Default_. Color coding and indicators will be shown.
+# *  `false`: The script will not run.
 #
-# Option | Description
-# ------ | -----------
-# true   | _Default_. An indicator will display if the stash is not empty.
-# false  | An indicator will not display the stash status.
+# ### bash.enableStashStatus
 #
-# bash.showStatusWhenZero
-# -----------------------
+# *  `true`: _Default_. An indicator will display if the stash is not empty.
+# *  `false`: An indicator will not display the stash status.
 #
-# Option | Description
-# ------ | -----------
-# true   | Indicators will be shown even if there are no updates to the index or
-#          working tree.
-# false  | _Default_. No file change indicators will be shown if there are no
-#          changes to the index or working tree.
+# ### bash.showStatusWhenZero
 #
-# bash.showUpstream
-# -----------------
+# *  `true`:   Indicators will be shown even if there are no updates to the index or
+#     working tree.
+# *  `false`: _Default_. No file change indicators will be shown if there are no
+#    changes to the index or working tree.
+#
+# ### bash.showUpstream
 #
 # By default, `__posh_git_ps1` will compare `HEAD` to your `SVN` upstream if it can
 # find one, or `@{upstream}` otherwise. This is also controlled by the legacy
 # environment variable `GIT_PS1_SHOWUPSTREAM`.
 #
-# Option | Description
-# ------ | -----------
-# legacy | Does not use the `--count` option available in recent versions of
-#          `git-rev-list`
-# git    | _Default_. Always compares `HEAD` to `@{upstream}`
-# svn    | Always compares `HEAD` to `SVN` upstream
+# *  `legacy`: Does not use the `--count` option available in recent versions of
+#    `git-rev-list`
+# *  `git`: _Default_. Always compares `HEAD` to `@{upstream}`
+# *  `svn`: Always compares `HEAD` to `SVN` upstream
 #
-# bash.enableStatusSymbol
-# -----------------------
-
-# Option | Description
-# ------ | -----------
-# true   | _Default_. Status symbols (`≡` `↑` `↓` `↕`) will be shown.
-# false  | No status symbol will be shown, saving some prompt length.
+# ### bash.enableStatusSymbol
+#
+# *  `true`: _Default_. Status symbols (`≡` `↑` `↓` `↕`) will be shown.
+# *  `false`: No status symbol will be shown, saving some prompt length.
 #
 ###############################################################################
 
