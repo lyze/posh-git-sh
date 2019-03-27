@@ -41,8 +41,7 @@
 # compact  | Display count alongside the appropriate up/down arrow. If both
 #          | behind and ahead, display the behind count, then a double arrow,
 #          | then the ahead count.
-# minimal  | Do not display counts or arrows; only the color of the branch name
-#          | will indicate the behind/ahead status.
+# minimal  | Display the up/down or double arrow as appropriate, with no counts.
 #
 # bash.describeStyle
 # ------------------
@@ -412,16 +411,22 @@ __posh_git_echo () {
             gitstring+="$BranchBehindStatusSymbol$__POSH_BRANCH_BEHIND_BY$BranchAheadStatusSymbol$__POSH_BRANCH_AHEAD_BY"
         elif [ "$BranchBehindAndAheadDisplay" = "compact" ]; then
             gitstring+=" $__POSH_BRANCH_BEHIND_BY$BranchBehindAndAheadStatusSymbol$__POSH_BRANCH_AHEAD_BY"
+        else
+            gitstring+=" $BranchBehindAndAheadStatusSymbol"
         fi
     elif (( $__POSH_BRANCH_BEHIND_BY > 0 )); then
         gitstring+="$BranchBehindBackgroundColor$BranchBehindForegroundColor$branchstring"
         if [ "$BranchBehindAndAheadDisplay" = "full" -o "$BranchBehindAndAheadDisplay" = "compact" ]; then
             gitstring+="$BranchBehindStatusSymbol$__POSH_BRANCH_BEHIND_BY"
+        else
+            gitstring+="$BranchBehindStatusSymbol"
         fi
     elif (( $__POSH_BRANCH_AHEAD_BY > 0 )); then
         gitstring+="$BranchAheadBackgroundColor$BranchAheadForegroundColor$branchstring"
         if [ "$BranchBehindAndAheadDisplay" = "full" -o "$BranchBehindAndAheadDisplay" = "compact" ]; then
             gitstring+="$BranchAheadStatusSymbol$__POSH_BRANCH_AHEAD_BY"
+        else
+            gitstring+="$BranchAheadStatusSymbol"
         fi
     elif (( $divergence_return_code )); then
         # ahead and behind are both 0, but there was some problem while executing the command.
