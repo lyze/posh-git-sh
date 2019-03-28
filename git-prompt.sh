@@ -126,40 +126,47 @@ __posh_git_echo () {
         return;
     fi
 
+    local Red='\033[0;31m'
+    local Green='\033[0;32m'
+    local BrightRed='\033[0;91m'
+    local BrightGreen='\033[0;92m'
+    local BrightYellow='\033[0;93m'
+    local BrightCyan='\033[0;96m'
+
     local DefaultForegroundColor=$(__posh_color '\e[m') # Default no color
     local DefaultBackgroundColor=
 
     local BeforeText='['
-    local BeforeForegroundColor=$(__posh_color '\e[1;33m') # Yellow
+    local BeforeForegroundColor=$(__posh_color $BrightYellow) # Yellow
     local BeforeBackgroundColor=
     local DelimText=' |'
-    local DelimForegroundColor=$(__posh_color '\e[1;33m') # Yellow
+    local DelimForegroundColor=$(__posh_color $BrightYellow) # Yellow
     local DelimBackgroundColor=
 
     local AfterText=']'
-    local AfterForegroundColor=$(__posh_color '\e[1;33m') # Yellow
+    local AfterForegroundColor=$(__posh_color $BrightYellow) # Yellow
     local AfterBackgroundColor=
 
-    local BranchForegroundColor=$(__posh_color '\e[1;36m')  # Cyan
+    local BranchForegroundColor=$(__posh_color $BrightCyan)  # Cyan
     local BranchBackgroundColor=
-    local BranchAheadForegroundColor=$(__posh_color '\e[1;32m') # Green
+    local BranchAheadForegroundColor=$(__posh_color $BrightGreen) # Green
     local BranchAheadBackgroundColor=
-    local BranchBehindForegroundColor=$(__posh_color '\e[0;31m') # Red
+    local BranchBehindForegroundColor=$(__posh_color $BrightRed) # Red
     local BranchBehindBackgroundColor=
-    local BranchBehindAndAheadForegroundColor=$(__posh_color '\e[1;33m') # Yellow
+    local BranchBehindAndAheadForegroundColor=$(__posh_color $BrightYellow) # Yellow
     local BranchBehindAndAheadBackgroundColor=
 
     local BeforeIndexText=''
-    local BeforeIndexForegroundColor=$(__posh_color '\e[1;32m') # Dark green
+    local BeforeIndexForegroundColor=$(__posh_color $Green) # Dark green
     local BeforeIndexBackgroundColor=
 
-    local IndexForegroundColor=$(__posh_color '\e[1;32m') # Dark green
+    local IndexForegroundColor=$(__posh_color $Green) # Dark green
     local IndexBackgroundColor=
 
-    local WorkingForegroundColor=$(__posh_color '\e[0;31m') # Dark red
+    local WorkingForegroundColor=$(__posh_color $Red) # Dark red
     local WorkingBackgroundColor=
 
-    local StashForegroundColor=$(__posh_color '\e[0;34m') # Darker blue
+    local StashForegroundColor=$(__posh_color $BrightRed) # Red
     local StashBackgroundColor=
     local BeforeStash='('
     local AfterStash=')'
