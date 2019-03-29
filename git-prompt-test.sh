@@ -1,11 +1,24 @@
 #!/usr/bin/env bash
 
-readonly PS=$(realpath tmp/powershell/pwsh)
-readonly SRC_DIR=$(realpath .)
-readonly POSH_GIT_DIR=$(realpath tmp/posh-git)
-readonly TEST_SCRATCH_DIR=$(realpath tmp/test-scratch)
+set -e
+
+readonly PS=$(readlink -f tmp/powershell/pwsh)
+readonly SRC_DIR=$(readlink -f .)
+readonly POSH_GIT_DIR=$(readlink -f tmp/posh-git)
+readonly TEST_SCRATCH_DIR=$(readlink -f tmp/test-scratch)
+
+DIFF_FLAGS=
+case "$-i" in
+  *i*) if [ -z "$TRAVIS" ]; then
+         DIFF_FLAGS=--color=auto 
+       fi ;;
+  *)   ;;
+esac
+readonly DIFF_FLAGS
 
 mkdir -p $TEST_SCRATCH_DIR
+
+set +e
 
 # Captures the posh command prompt for posh-git-sh and posh-git.
 #
@@ -70,7 +83,7 @@ test_poshes_ignoring_color() {
   local actual_out=$actual-nocolor
   strip_ansi_colors "$expected" > "$expected_out"
   strip_ansi_colors "$actual" > "$actual_out"
-  diff -u --color=always --label="$expected_out" "$expected_out" --label="$actual_out" "$actual_out"
+  diff -u --label="$expected_out" "$expected_out" --label="$actual_out" "$actual_out" $DIFF_FLAGS
 }
 
 PASSING=0

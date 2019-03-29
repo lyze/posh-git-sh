@@ -2,13 +2,16 @@ TMP=tmp
 PS_VERSION=6.1.0
 POSH_GIT_VERSION=v1.0.0-beta3
 
-.PHONY: clean test
+.PHONY: clean clean-test test
 
 test: $(TMP)/powershell/pwsh $(TMP)/posh-git/README.md
 	./git-prompt-test.sh
 
 clean:
 	rm -rf $(TMP)
+
+clean-test:
+	rm -rf $(TMP)/test-scratch
 
 $(TMP):
 	mkdir -p $@
