@@ -1,6 +1,8 @@
 posh-git-bash
 =============
 
+[![Build Status](https://travis-ci.org/lyze/posh-git-sh.svg?branch=master)](https://travis-ci.org/lyze/posh-git-sh)
+
 This script allows you to see the status of the current git repository in your
 prompt. It replicates the prompt status from the Windows PowerShell module
 [dahlbyk/posh-git](https://github.com/dahlbyk/posh-git).
