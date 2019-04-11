@@ -111,7 +111,7 @@ following `git status`:
 To get the above prompt display, I have the following in my `.bashrc`:
 
 ```sh
-export PROMPT_COMMAND='__posh_git_ps1 "\\[\[\e[0;32m\]\u@\h \[\e[0;33m\]\w" " \[\e[1;34m\]\n\$\[\e[0m\] ";'$PROMPT_COMMAND
+export PROMPT_COMMAND='__posh_git_ps1 "\[\e[1;32m\]\u@\h:\[\e[1;34m\]\w\[\e[1;00m\] " "\\\$ ";'$PROMPT_COMMAND
 ```
 
 Try it out and let me know what you think!
@@ -235,3 +235,13 @@ License
 -------
 
 This is distributed under the GNU GPL v2.0.
+
+## Changes made from forking
+
+Simple changes that skip processing if *git status* output hasn't changed since last time processed.
+
+**time** results shows an average of ~60% drop of processing time, making the terminal a lot less idle
+
+### Added known issues
+
+If changes are made in the project while the terminal is running any kind of script, changes are never noticed until directory change
