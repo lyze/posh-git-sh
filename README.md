@@ -44,7 +44,7 @@ Installation Instructions
 
     ```zsh
     precmd() {
-      __posh_git_ps1 '\u@\h:\w ' '$ '
+      __posh_git_ps1 '%n@%m:%~ ' '$ '
     }
     ```
 
