@@ -329,6 +329,9 @@ __posh_git_echo () {
                 M )
                     (( indexModified++ ))
                     ;;
+                T )
+                    (( indexModified++ ))
+                    ;;
                 R )
                     (( indexModified++ ))
                     ;;
@@ -350,6 +353,9 @@ __posh_git_echo () {
                     (( filesAdded++ ))
                     ;;
                 M )
+                    (( filesModified++ ))
+                    ;;
+                T )
                     (( filesModified++ ))
                     ;;
                 D )
