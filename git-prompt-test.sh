@@ -2,10 +2,36 @@
 
 set -e
 
+OPTS=$(getopt --options= --longoptions=use-existing-fixtures -n "$0" -- "$@")
+if [ $? -ne 0 ]; then
+  exit 1
+fi
+eval set -- "$OPTS"
+unset OPTS
+while true; do
+  case "$1" in
+    --use-existing-fixtures)
+      readonly USE_EXISTING_FIXTURES=true
+      shift
+      continue
+      ;;
+    --)
+      shift
+      break
+      ;;
+  esac
+done
+
 readonly PS=$(readlink -f tmp/powershell/pwsh)
 readonly SRC_DIR=$(readlink -f .)
 readonly POSH_GIT_DIR=$(readlink -f tmp/posh-git)
 readonly TEST_SCRATCH_DIR=$(readlink -f tmp/test-scratch)
+
+if [ -n "$USE_EXISTING_FIXTURES" ]; then
+  echo -e "\e[33m[ WARN ] using preexisting test fixtures\e[0m"
+else
+  rm -rf $TEST_SCRATCH_DIR
+fi
 
 DIFF_FLAGS=
 case "$-i" in
@@ -126,10 +152,15 @@ internal_run_test() {
 
   echo '[ RUN  ] '$testcase
 
-  mkdir -p $TEST_SCRATCH_DIR/$testcase/git
-  cd $TEST_SCRATCH_DIR/$testcase/git
+  mkdir -p $TEST_SCRATCH_DIR/$testcase
+  cd $TEST_SCRATCH_DIR/$testcase
 
-  if [ ! -f ../git_setup_complete ]; then
+  if [ -f git_setup_complete ]; then
+    cd git
+  else
+    rm -rf git/
+    mkdir git
+    cd git
     git init &>/dev/null
     $git_setup_fn &>/dev/null
     touch ../git_setup_complete
@@ -186,6 +217,17 @@ one_file_staged_with_unstaged_edit() {
   echo stuff > stuff
 }
 run_test_known_diff one_file_staged_with_unstaged_edit '[master ? +1 ~0 -0 | +0 ~1 -0]'
+
+one_file_typechange() {
+  touch file_or_link
+  touch target
+  git add .
+  git commit -m 'first commit'
+
+  rm file_or_link
+  ln -s target file_or_link
+}
+run_test_known_diff one_file_typechange '[master ? +0 ~1 -0]'
 
 one_file_stashed() {
   touch stuff

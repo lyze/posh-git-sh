@@ -1,6 +1,6 @@
 # bash/zsh git prompt support
 #
-# Copyright (C) 2018 David Xu
+# Copyright (C) 2020 David Xu
 #
 # Based on the earlier work by Shawn O. Pearce <spearce@spearce.org>
 # Distributed under the GNU General Public License, version 2.0.
@@ -329,6 +329,9 @@ __posh_git_echo () {
                 M )
                     (( indexModified++ ))
                     ;;
+                T )
+                    (( indexModified++ ))
+                    ;;
                 R )
                     (( indexModified++ ))
                     ;;
@@ -350,6 +353,9 @@ __posh_git_echo () {
                     (( filesAdded++ ))
                     ;;
                 M )
+                    (( filesModified++ ))
+                    ;;
+                T )
                     (( filesModified++ ))
                     ;;
                 D )
