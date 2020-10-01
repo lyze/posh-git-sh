@@ -107,6 +107,15 @@ __posh_git_ps1 ()
     esac
     local gitstring=$(__posh_git_echo)
     PS1=$ps1pc_prefix$gitstring$ps1pc_suffix
+
+    # If this is an xterm set the title to user@host:dir
+    case "$TERM" in
+    xterm*|rxvt*)
+        PS1="\[\e]0;${debian_chroot:+($debian_chroot)}\u@\h: \w\a\]$PS1"
+        ;;
+    *)
+        ;;
+    esac
 }
 
 __posh_color () {
