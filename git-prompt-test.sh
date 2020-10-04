@@ -203,20 +203,20 @@ run_test_known_diff empty '[master ?]'
 one_file_unstaged() {
   touch stuff
 }
-run_test_known_diff one_file_unstaged '[master ? +1 ~0 -0]'
+run_test_known_diff one_file_unstaged '[master ? +1 ~0 -0 !]'
 
 one_file_staged() {
   touch stuff
   git add stuff
 }
-run_test_known_diff one_file_staged '[master ? +1 ~0 -0]'
+run_test_known_diff one_file_staged '[master ? +1 ~0 -0 ~]'
 
 one_file_staged_with_unstaged_edit() {
   touch stuff
   git add stuff
   echo stuff > stuff
 }
-run_test_known_diff one_file_staged_with_unstaged_edit '[master ? +1 ~0 -0 | +0 ~1 -0]'
+run_test_known_diff one_file_staged_with_unstaged_edit '[master ? +1 ~0 -0 | +0 ~1 -0 !]'
 
 one_file_typechange() {
   touch file_or_link
@@ -227,7 +227,7 @@ one_file_typechange() {
   rm file_or_link
   ln -s target file_or_link
 }
-run_test_known_diff one_file_typechange '[master ? +0 ~1 -0]'
+run_test_known_diff one_file_typechange '[master ? +0 ~1 -0 !]'
 
 one_file_stashed() {
   touch stuff
@@ -266,7 +266,7 @@ added_edited_deleted_staged_and_unstaged() {
   # unstaged delete
   rm delete_me_2
 }
-run_test_known_diff added_edited_deleted_staged_and_unstaged '[master ? +1 ~1 -1 | +1 ~1 -1]'
+run_test_known_diff added_edited_deleted_staged_and_unstaged '[master ? +1 ~1 -1 | +1 ~1 -1 !]'
 
 # Test summary
 if (( $PASSING_WARNING > 0 || $FAILING_WARNING > 0)); then

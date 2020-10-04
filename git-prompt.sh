@@ -171,6 +171,12 @@ __posh_git_echo () {
     local BeforeStash='('
     local AfterStash=')'
 
+    local LocalDefaultStatusSymbol=''
+    local LocalWorkingStatusSymbol=' !'
+    local LocalWorkingStatusColor=$(__posh_color "$Red")
+    local LocalStagedStatusSymbol=' ~'
+    local LocalStagedStatusColor=$(__posh_color "$BrightCyan")
+
     local RebaseForegroundColor=$(__posh_color '\e[0m') # reset
     local RebaseBackgroundColor=
 
@@ -406,10 +412,13 @@ __posh_git_echo () {
         gitstring+="$BranchBackgroundColor$BranchForegroundColor$branchstring$BranchIdenticalStatusSymbol"
     fi
 
+    gitstring+="${rebase:+$RebaseForegroundColor$RebaseBackgroundColor$rebase}"
+
     # index status
     if $EnableFileStatus; then
         local indexCount="$(( $indexAdded + $indexModified + $indexDeleted + $indexUnmerged ))"
         local workingCount="$(( $filesAdded + $filesModified + $filesDeleted + $filesUnmerged ))"
+
         if (( $indexCount != 0 )) || $ShowStatusWhenZero; then
             gitstring+="$IndexBackgroundColor$IndexForegroundColor +$indexAdded ~$indexModified -$indexDeleted"
         fi
@@ -425,11 +434,23 @@ __posh_git_echo () {
         if (( $filesUnmerged != 0 )); then
             gitstring+=" $WorkingBackgroundColor$WorkingForegroundColor!$filesUnmerged"
         fi
-    fi
-    gitstring+="${rebase:+$RebaseForegroundColor$RebaseBackgroundColor$rebase}"
 
-    if $EnableStashStatus && $hasStash; then
-        gitstring+="$DefaultBackgroundColor$DefaultForegroundColor $StashBackgroundColor$StashForegroundColor$BeforeStash$stashCount$AfterStash"
+        local localStatusSymbol=$LocalDefaultStatusSymbol
+        local localStatusColor=$DefaultForegroundColor
+       
+        if (( workingCount != 0 )); then
+            localStatusSymbol=$LocalWorkingStatusSymbol
+            localStatusColor=$LocalWorkingStatusColor
+        elif (( indexCount != 0 )); then
+            localStatusSymbol=$LocalStagedStatusSymbol
+            localStatusColor=$LocalStagedStatusColor
+        fi
+
+        gitstring+="$DefaultBackgroundColor$localStatusColor$localStatusSymbol$DefaultForegroundColor"
+
+        if $EnableStashStatus && $hasStash; then
+            gitstring+="$DefaultBackgroundColor$DefaultForegroundColor $StashBackgroundColor$StashForegroundColor$BeforeStash$stashCount$AfterStash"
+        fi
     fi
 
     # after-branch text

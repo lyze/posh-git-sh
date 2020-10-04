@@ -58,7 +58,7 @@ The Prompt
 By default, the status summary has the following format:
 
 ```sh
-[{HEAD-name} x +A ~B -C !D | +E ~F -G !H]
+[{HEAD-name} x +A ~B -C !D | +E ~F -G !H W]
 ```
 
 * `{HEAD-name}` is the current branch, or the SHA of a detached HEAD. The color
@@ -82,8 +82,13 @@ By default, the status summary has the following format:
   * `~` modified
   * `-` removed
   * `!` conflicting
+* `W` represents the overall status of the working directory.
+  * `!` there are unstaged changes in the working tree
+  * `~` there are uncommitted changes, i.e. staged changes, in the working tree
+    waiting to be committed
+  * None: there are no unstaged or uncommitted changes to the working tree
 
-For example, a status of `[master ≡ +0 ~2 -1 | +1 ~1 -0]` corresponds to the
+For example, a status of `[master ≡ +0 ~2 -1 | +1 ~1 -0 !]` corresponds to the
 following `git status`:
 
     # On branch master
