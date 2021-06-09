@@ -245,4 +245,4 @@ you may find some use for this script.
 License
 -------
 
-This is distributed under the GNU GPL v2.0.
+This is distributed under the GNU GPL v3.
