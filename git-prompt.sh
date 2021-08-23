@@ -465,7 +465,7 @@ __posh_git_echo () {
 
     # after-branch text
     gitstring+="$AfterBackgroundColor$AfterForegroundColor$AfterText$DefaultBackgroundColor$DefaultForegroundColor"
-    echo "$gitstring"
+    echo " $gitstring"
 }
 
 # Returns the location of the .git/ directory.
