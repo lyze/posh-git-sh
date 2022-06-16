@@ -51,6 +51,14 @@ Installation Instructions
     For some additional hints for integrating with `oh-my-zsh`, take a look at
     [issue #14](https://github.com/lyze/posh-git-sh/issues/14).
 
+## Installation with Fig
+
+[Fig](https://fig.io) adds apps, shortcuts, and autocomplete to your existing terminal.
+
+Install `posh-git-sh` in just one click.
+
+<a href="https://fig.io/plugins/other/posh-git-sh_lyze" target="_blank"><img src="https://fig.io/badges/install-with-fig.svg" /></a>
+
 
 The Prompt
 ----------
