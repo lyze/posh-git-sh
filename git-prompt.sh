@@ -279,7 +279,7 @@ __posh_git_echo () {
 
         b=$(git symbolic-ref HEAD 2>/dev/null) || {
             is_detached=true
-            local output=$(git config -z --get bash.describeStyle)
+            local output=$(git config --get bash.describeStyle)
             if [ -n "$output" ]; then
                 GIT_PS1_DESCRIBESTYLE=$output
             fi
