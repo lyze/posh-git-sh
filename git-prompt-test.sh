@@ -60,7 +60,7 @@ run_poshes() {
   bash &> ../posh-sh-unfiltered -i <<EOF
 PS1=
 source $SRC_DIR/git-prompt.sh
-__posh_git_ps1 ===TEST=== ===TEST===
+__posh_git_ps1 ===TEST=== ===TEST=== '' ''
 EOF
 
   # Extract posh-git-sh PS1. Ignore the line where we actually make the call to

@@ -1,6 +1,6 @@
 TMP=tmp
-PS_VERSION=6.1.0
-POSH_GIT_VERSION=v1.0.0-beta3
+PS_VERSION=7.3.0
+POSH_GIT_VERSION=v1.1.0
 
 .PHONY: clean clean-test test
 
@@ -24,6 +24,7 @@ $(TMP)/powershell:
 
 $(TMP)/powershell/pwsh: $(TMP)/powershell.tar.gz | $(TMP)/powershell
 	tar zxf $(TMP)/powershell.tar.gz -C $(TMP)/powershell/
+	chmod +x $@
 	touch $@
 
 $(TMP)/posh-git:

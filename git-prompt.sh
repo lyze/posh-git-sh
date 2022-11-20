@@ -1,6 +1,6 @@
 # bash/zsh git prompt support
 #
-#    Copyright (C) 2021 David Xu
+#    Copyright (C) 2022 David Xu
 #
 #    This program is free software: you can redistribute it and/or modify
 #    it under the terms of the GNU General Public License as published by
@@ -97,26 +97,48 @@
 #
 ###############################################################################
 
-# Convenience function to set PS1 to show git status. Must supply two
-# arguments that specify the prefix and suffix of the git status string.
+# Convenience function to set PS1 to show git status. Must supply exactly
+# either two or four arguments that specify the prefix and suffix of the git
+# status string.
+#
+#   __posh_git_ps1 PREFIX SUFFIX
+#
+#   __posh_git_ps1 PREFIX SUFFIX GIT_PREFIX GIT_SUFFIX
+#
+# In the four-argument form, uses GIT_PREFIX and GIT_SUFFIX if git status is
+# present, effectively as if
+#
+# ${PREFIX}${GIT_PREFIX}${POSH}${GIT_SUFFIX}${SUFFIX}
 #
 # This function should be called in PROMPT_COMMAND or similar.
 __posh_git_ps1 ()
 {
     local ps1pc_prefix=
     local ps1pc_suffix=
+    local git_prefix=
+    local git_suffix=
     case "$#" in
         2)
             ps1pc_prefix=$1
             ps1pc_suffix=$2
             ;;
+        4)
+            ps1pc_prefix=$1
+            ps1pc_suffix=$2
+            git_prefix=$3
+            git_suffix=$4
+            ;;
         *)
             echo __posh_git_ps1: bad number of arguments >&2
             return
             ;;
-    esac
+        esac
     local gitstring=$(__posh_git_echo)
-    PS1=$ps1pc_prefix$gitstring$ps1pc_suffix
+    if [ -z "$gitstring" ]; then
+      PS1=$ps1pc_prefix$ps1pc_suffix
+    else
+      PS1=$ps1pc_prefix$git_prefix$gitstring$git_suffix$ps1pc_suffix
+    fi
 }
 
 __posh_color () {
@@ -465,7 +487,7 @@ __posh_git_echo () {
 
     # after-branch text
     gitstring+="$AfterBackgroundColor$AfterForegroundColor$AfterText$DefaultBackgroundColor$DefaultForegroundColor"
-    echo " $gitstring"
+    echo "$gitstring"
 }
 
 # Returns the location of the .git/ directory.
